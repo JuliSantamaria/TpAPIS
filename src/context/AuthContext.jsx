@@ -3,10 +3,10 @@ import { createContext, useState, useContext } from 'react';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // { username: 'Eze', role: 'admin' }
+  const [user, setUser] = useState(null); // Guarda los datos completos del usuario
 
-  const login = (username, role) => {
-    setUser({ username, role }); // Simulamos login
+  const login = (userData) => {
+    setUser(userData); // Aquí guardas el objeto completo del usuario
   };
 
   const logout = () => {
