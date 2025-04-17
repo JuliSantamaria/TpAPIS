@@ -26,6 +26,7 @@ export default function Navbar() {
             Bienvenido, <strong>{user.nombre}</strong>
           </span>{" "}
           |{" "}
+          <Link to="/profile">Perfil</Link> |{" "}
           {user.rol === "admin" && (
             <>
               <Link to="/admin">Panel Admin</Link> |{" "}
