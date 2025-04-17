@@ -1,0 +1,22 @@
+{
+  "usuarios": [
+    {
+      "id": "7744",
+      "username": "dieguito",
+      "email": "diegomartinezcapo@gmail.com",
+      "password": "juliselacome",
+      "nombre": "Diego Joaquin",
+      "apellido": "Martinez Auqui",
+      "rol": "admin"
+    },
+    {
+      "id": "31de",
+      "username": "usuarioanashe",
+      "email": "user@mail.com",
+      "password": "123456",
+      "nombre": "Prueba",
+      "apellido": "Muñeco",
+      "rol": "user"
+    }
+  ]
+}

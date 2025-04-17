@@ -1,17 +1,29 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // { username: 'Eze', role: 'admin' }
+  const [user, setUser] = useState(null); // Usuario logueado
 
-  const login = (username, role) => {
-    setUser({ username, role }); // Simulamos login
+  // Login: guarda el usuario completo
+  const login = (userData) => {
+    setUser(userData);
+    localStorage.setItem("usuario", JSON.stringify(userData)); // persistencia opcional
   };
 
+  // Logout: limpia todo
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("usuario");
   };
+
+  // Recuperar usuario desde localStorage al recargar
+  useEffect(() => {
+    const storedUser = localStorage.getItem("usuario");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
@@ -20,5 +32,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Hook personalizado
+// Hook personalizado para acceder fácilmente
 export const useAuth = () => useContext(AuthContext);
+
