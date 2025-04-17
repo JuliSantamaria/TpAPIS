@@ -14,16 +14,25 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:5000/api/login", {
-        email,
-        password,
-      });
+      // Obtenemos todos los usuarios registrados desde el JSON
+      const res = await axios.get("http://localhost:3001/usuarios");
+      const usuarios = res.data;
 
-      login(res.data.usuario); // Guardas TODO el usuario que llega del backend
-      navigate("/"); // Rediriges al usuario al home
+      // Buscamos si existe un usuario que coincida
+      const usuario = usuarios.find(
+        (u) => u.email === email && u.password === password
+      );
+
+      if (usuario) {
+        login(usuario); // Guardamos el usuario en el contexto
+        // Redirigimos al home
+        navigate("/");
+      } else {
+        setError("Usuario o contraseña incorrectos");
+      }
     } catch (err) {
-      console.error(err);
-      setError("Usuario o contraseña incorrectos");
+      console.error("🔥 Error al intentar loguear:", err);
+      setError("Ocurrió un error al iniciar sesión");
     }
   };
 
@@ -53,4 +62,5 @@ export default function Login() {
     </div>
   );
 }
+
 

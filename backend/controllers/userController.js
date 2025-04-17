@@ -1,14 +1,12 @@
 const fs = require('fs');
 const path = require('path');
-
-const dbPath = path.join(__dirname, '../db.json');
-
+const dbPath = path.join(__dirname, '../dbusuarios.json');
 
 // Leer usuarios desde db.json
 const leerUsuarios = () => {
   const data = fs.readFileSync(dbPath, 'utf-8');
   const jsonData = JSON.parse(data);
-  return jsonData.users || [];
+  return jsonData.usuarios || [];
 
 };
 

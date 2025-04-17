@@ -8,7 +8,9 @@ export default function Register() {
     password: '',
     nombre: '',
     apellido: '',
+    rol: 'user' // ✅ valor por defecto
   });
+  
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -17,7 +19,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/register', user);
+      await axios.post('http://localhost:3001/usuarios', user);
       alert('Usuario registrado correctamente');
     } catch (error) {
       console.error("🔥 Error en el registro:", error);
