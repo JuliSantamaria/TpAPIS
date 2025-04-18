@@ -16,7 +16,6 @@ export default function Navbar() {
   return (
     <nav style={{ padding: '10px', borderBottom: '1px solid #ccc', display: 'flex', gap: '15px', alignItems: 'center' }}>
       <Link to="/">Inicio</Link>
-      <Link to="/cart">Carrito</Link>
 
       {/* Categorías con dropdown */}
       <div style={{ position: 'relative' }}>
@@ -43,6 +42,8 @@ export default function Navbar() {
           </div>
         )}
       </div>
+
+      <Link to="/cart">Carrito</Link>
 
       {!user && (
         <>
