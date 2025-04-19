@@ -1,3 +1,12 @@
+/* Fondo general y texto */
+body {
+  margin: 0;
+  background-color: #1e1e1e;
+  color: #f5f5f5;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Contenedor principal */
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -5,6 +14,63 @@
   text-align: center;
 }
 
+/* Estilo general de inputs */
+input {
+  padding: 0.6rem;
+  margin: 0.5rem 0;
+  border-radius: 6px;
+  border: 1px solid #ff8533;
+  background-color: #2c2c2c;
+  color: white;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Estilo de botones */
+button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #FF6B00;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #ff8533;
+}
+
+/* Tarjetas */
+.card {
+  background-color: #2c2c2c;
+  padding: 2em;
+  margin: 1rem auto;
+  border-radius: 10px;
+  width: fit-content;
+  box-shadow: 0 0 10px rgba(255, 107, 0, 0.2);
+}
+
+/* Navbar opcional */
+nav {
+  background-color: #2c2c2c;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #ff6b00;
+}
+
+nav a {
+  margin: 0 1rem;
+  color: #ff8533;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  color: #ffa94d;
+}
+
+/* Si querés mantener las animaciones del logo */
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -12,10 +78,7 @@
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 2em #ff6b00aa);
 }
 
 @keyframes logo-spin {
@@ -33,10 +96,7 @@
   }
 }
 
-.card {
-  padding: 2em;
-}
-
 .read-the-docs {
   color: #888;
 }
+
