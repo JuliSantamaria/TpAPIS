@@ -38,24 +38,6 @@
     },
     {
       "id": 5,
-      "name": "Shure SM58",
-      "category": "microfonos",
-      "description": "Micrófono dinámico para voz con calidad profesional.",
-      "image": "/img/sm58.jpg",
-      "price": 100,
-      "stock": 10
-    },
-    {
-      "id": 6,
-      "name": "AKG P220",
-      "category": "microfonos",
-      "description": "Micrófono condensador ideal para home studio.",
-      "image": "/img/akg.jpg",
-      "price": 180,
-      "stock": 7
-    },
-    {
-      "id": 7,
       "name": "Yamaha P-45",
       "category": "pianos",
       "description": "Piano digital de 88 teclas con acción realista.",
@@ -64,7 +46,7 @@
       "stock": 5
     },
     {
-      "id": 8,
+      "id": 6,
       "name": "Casio Privia PX-160",
       "category": "pianos",
       "description": "Piano digital versátil y portátil con buena respuesta.",
@@ -72,6 +54,26 @@
       "price": 550,
       "stock": 6
     }
-  ]
-}
+],
+"usuarios": [
+      {
+        "id": "7744",
+        "username": "dieguito",
+        "email": "diegomartinezcapo@gmail.com",
+        "password": "dieguito",
+        "nombre": "Diego Joaquin",
+        "apellido": "Martinez Auqui",
+        "rol": "admin"
+      },
+      {
+        "id": "31de",
+        "username": "usuarioanashe",
+        "email": "user@mail.com",
+        "password": "123456",
+        "nombre": "Prueba",
+        "apellido": "Muñeco",
+        "rol": "user"
+      }
+    ]
+  }
 
