@@ -10,7 +10,7 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import AdminPanel from './pages/AdminPanel';
 import Profile from './pages/Profile';
-import CategoryPage from "./components/CategoryPage";
+import CategoryPage from "./pages/CategoryPage";
 
 
 function App() {
@@ -27,6 +27,9 @@ function App() {
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/categoria/:nombre" element={<CategoryPage />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+
         </Routes>
       </Router>
     </AuthProvider>
