@@ -30,49 +30,56 @@ export default function Register() {
   return (
     <div className="register-container">
       <h2 className="register-title">Registro de Usuario</h2>
+  
       <form onSubmit={handleSubmit}>
         <input
           className="register-input"
+          type="text"
           name="username"
           placeholder="Usuario"
           onChange={handleChange}
           required
         />
+  
         <input
           className="register-input"
-          name="email"
           type="email"
+          name="email"
           placeholder="Email"
           onChange={handleChange}
           required
         />
+  
         <input
           className="register-input"
-          name="password"
           type="password"
+          name="password"
           placeholder="Contraseña"
           onChange={handleChange}
           required
         />
+  
         <input
           className="register-input"
+          type="text"
           name="nombre"
           placeholder="Nombre"
           onChange={handleChange}
           required
         />
+  
         <input
           className="register-input"
+          type="text"
           name="apellido"
           placeholder="Apellido"
           onChange={handleChange}
           required
         />
+  
         <button className="register-button" type="submit">
           Registrar
         </button>
       </form>
     </div>
-  );
-}
-
+  );}
