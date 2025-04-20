@@ -1,13 +1,14 @@
-
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useCart } from "../context/CartContext"; // 👈 Importar hook
 
 export default function ProductDetail() {
   const { id } = useParams();
   const [producto, setProducto] = useState(null);
+  const { addToCart } = useCart(); // 👈 Usar hook
 
   useEffect(() => {
-    fetch(`http://localhost:3000/productos/${id}`)
+    fetch(`http://localhost:3002/productos/${id}`)
       .then((res) => res.json())
       .then((data) => setProducto(data))
       .catch((err) => console.error("Error al cargar producto:", err));
@@ -21,13 +22,26 @@ export default function ProductDetail() {
     <div style={{ maxWidth: "800px", margin: "0 auto", padding: "2rem" }}>
       <h1 style={{ textAlign: "center" }}>{nombre}</h1>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "center", marginBottom: "1rem" }}>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "10px",
+          justifyContent: "center",
+          marginBottom: "1rem",
+        }}
+      >
         {imagenes.map((img, index) => (
           <img
             key={index}
             src={`/img/${img}`}
             alt={`Imagen ${index + 1}`}
-            style={{ width: "150px", height: "150px", objectFit: "cover", borderRadius: "8px" }}
+            style={{
+              width: "150px",
+              height: "150px",
+              objectFit: "cover",
+              borderRadius: "8px",
+            }}
           />
         ))}
       </div>
@@ -37,6 +51,10 @@ export default function ProductDetail() {
 
       {stock > 0 ? (
         <button
+          onClick={() => {
+            console.log("Click en agregar al carrito");
+            addToCart(producto); // 👈 Agregar al carrito correctamente
+          }}
           style={{
             marginTop: "1rem",
             padding: "10px 20px",
