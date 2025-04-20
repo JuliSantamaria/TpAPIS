@@ -5,15 +5,25 @@ import { useCart } from "../context/CartContext"; // 👈 Importar hook
 export default function ProductDetail() {
   const { id } = useParams();
   const [producto, setProducto] = useState(null);
+  const [error, setError] = useState(null); // 👈 Estado para manejar errores
   const { addToCart } = useCart(); // 👈 Usar hook
 
   useEffect(() => {
     fetch(`http://localhost:3002/productos/${id}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Producto no encontrado (ID: ${id})`);
+        }
+        return res.json();
+      })
       .then((data) => setProducto(data))
-      .catch((err) => console.error("Error al cargar producto:", err));
+      .catch((err) => {
+        console.error("Error al cargar producto:", err);
+        setError(err.message); // 👈 Guardar el mensaje de error
+      });
   }, [id]);
 
+  if (error) return <p style={{ color: "red" }}>{error}</p>; // 👈 Mostrar error si ocurre
   if (!producto) return <p>Cargando...</p>;
 
   const { nombre, descripcionDetallada, precio, imagenes, stock } = producto;

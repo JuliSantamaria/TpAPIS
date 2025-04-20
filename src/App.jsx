@@ -11,7 +11,8 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import AdminPanel from './pages/AdminPanel';
 import Profile from './pages/Profile';
-import CategoryPage from "./pages/CategoryPage";
+import CategoryPage from './pages/CategoryPage';
+
 
 
 function App() {
