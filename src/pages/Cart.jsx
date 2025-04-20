@@ -9,7 +9,9 @@ export default function Cart() {
       <div className="flex-1 bg-white p-4 rounded shadow">
         <h2 className="text-2xl font-bold mb-4">Tu carrito</h2>
         {cartItems.length === 0 ? (
+
           <p className="text-red-500">El carrito está vacío.</p>
+
         ) : (
           <ul className="space-y-6">
             {cartItems.map((item, index) => (
