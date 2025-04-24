@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import '../assets/Register.css'; // ✅ Importamos el CSS propio
 
 export default function Register() {
   const [user, setUser] = useState({
@@ -8,9 +9,8 @@ export default function Register() {
     password: '',
     nombre: '',
     apellido: '',
-    rol: 'user' // ✅ valor por defecto
+    rol: 'user'
   });
-  
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -25,17 +25,61 @@ export default function Register() {
       console.error("🔥 Error en el registro:", error);
       alert(error.response?.data?.mensaje || "Error al registrar usuario");
     }
-    
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input name="username" placeholder="Usuario" onChange={handleChange} required />
-      <input name="email" placeholder="Email" type="email" onChange={handleChange} required />
-      <input name="password" placeholder="Contraseña" type="password" onChange={handleChange} required />
-      <input name="nombre" placeholder="Nombre" onChange={handleChange} required />
-      <input name="apellido" placeholder="Apellido" onChange={handleChange} required />
-      <button type="submit">Registrar</button>
-    </form>
-  );
-}
+    <div className="register-container">
+      <h2 className="register-title">Registro de Usuario</h2>
+  
+      <form onSubmit={handleSubmit}>
+        <input
+          className="register-input"
+          type="text"
+          name="username"
+          placeholder="Usuario"
+          onChange={handleChange}
+          required
+        />
+  
+        <input
+          className="register-input"
+          type="email"
+          name="email"
+          placeholder="Email"
+          onChange={handleChange}
+          required
+        />
+  
+        <input
+          className="register-input"
+          type="password"
+          name="password"
+          placeholder="Contraseña"
+          onChange={handleChange}
+          required
+        />
+  
+        <input
+          className="register-input"
+          type="text"
+          name="nombre"
+          placeholder="Nombre"
+          onChange={handleChange}
+          required
+        />
+  
+        <input
+          className="register-input"
+          type="text"
+          name="apellido"
+          placeholder="Apellido"
+          onChange={handleChange}
+          required
+        />
+  
+        <button className="register-button" type="submit">
+          Registrar
+        </button>
+      </form>
+    </div>
+  );}
