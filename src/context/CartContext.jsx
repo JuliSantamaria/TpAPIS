@@ -10,7 +10,7 @@ export function CartProvider({ children }) {
         const existingItem = prev.find((item) => item.id === product.id);
   
         if (existingItem) {
-          // Si ya está en el carrito, actualizá la cantidad (sin pasar el stock)
+          
           return prev.map((item) =>
             item.id === product.id
               ? {
@@ -23,11 +23,12 @@ export function CartProvider({ children }) {
               : item
           );
         } else {
-          // Si no está, agregalo con la cantidad
+          
           return [...prev, { ...product, quantity }];
         }
       });
     };
+
 
     const updateQuantity = (productId, newQuantity) => {
         setCartItems((prev) =>

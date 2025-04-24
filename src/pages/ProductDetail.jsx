@@ -1,14 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useCart } from "../context/CartContext";
+
 
 export default function ProductDetail() {
   const { id } = useParams();
   const [producto, setProducto] = useState(null);
-  const [cantidad, setCantidad] = useState(1);
-  const { addToCart } = useCart();
   const [error, setError] = useState(null); // 👈 Estado para manejar errores
-
+  const { addToCart } = useCart(); // 👈 Usar hook
 
   useEffect(() => {
     fetch(`http://localhost:3002/productos/${id}`)
@@ -28,11 +26,9 @@ export default function ProductDetail() {
   if (error) return <p style={{ color: "red" }}>{error}</p>; // 👈 Mostrar error si ocurre
   if (!producto) return <p>Cargando...</p>;
 
-  const { nombre, descripcionDetallada, precio, imagenes, stock } = producto;
+  
 
-  const handleAddToCart = () => {
-    addToCart(producto, cantidad);
-  };
+  const { nombre, descripcionDetallada, precio, imagenes, stock } = producto;
 
   return (
     <div style={{ maxWidth: "800px", margin: "0 auto", padding: "2rem" }}>
@@ -66,33 +62,23 @@ export default function ProductDetail() {
       <p style={{ fontSize: "1.5rem", fontWeight: "bold" }}>${precio}</p>
 
       {stock > 0 ? (
-        <>
-          <label>
-            Cantidad:{" "}
-            <input
-              type="number"
-              min="1"
-              max={stock}
-              value={cantidad}
-              onChange={(e) => setCantidad(parseInt(e.target.value))}
-              style={{ width: "60px", marginLeft: "8px" }}
-            />
-          </label>
-          <button
-            onClick={handleAddToCart}
-            style={{
-              marginTop: "1rem",
-              padding: "10px 20px",
-              backgroundColor: "#333",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
-            Agregar al carrito
-          </button>
-        </>
+        <button
+          onClick={() => {
+            console.log("Click en agregar al carrito");
+            addToCart(producto); // 👈 Agregar al carrito correctamente
+          }}
+          style={{
+            marginTop: "1rem",
+            padding: "10px 20px",
+            backgroundColor: "#333",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
+          Agregar al carrito
+        </button>
       ) : (
         <p style={{ color: "red", fontWeight: "bold" }}>Sin stock</p>
       )}
