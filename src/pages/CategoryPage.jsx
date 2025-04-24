@@ -1,4 +1,3 @@
-
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
@@ -9,12 +8,12 @@ export default function CategoryPage() {
   const [filtrados, setFiltrados] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/products") // Ruta de json-server
+    fetch("http://localhost:3002/productos") // Ruta de json-server
       .then((res) => res.json())
       .then((data) => {
         setProductos(data);
         const filtradosPorCategoria = data.filter(
-          (prod) => prod.category.toLowerCase() === nombre.toLowerCase()
+          (prod) => prod.categoria.toLowerCase() === nombre.toLowerCase()
         );
         setFiltrados(filtradosPorCategoria);
       })

@@ -1,79 +1,88 @@
 {
-  "products": [
+  "productos": [
     {
-      "id": 1,
-      "name": "Fender Stratocaster",
-      "category": "guitarras",
-      "description": "Guitarra eléctrica legendaria para blues y rock.",
-      "image": "/img/fender.jpg",
-      "price": 1200,
-      "stock": 3
+      "id": "1",
+      "nombre": "Fender Stratocaster",
+      "descripcion": "Guitarra eléctrica con gran versatilidad.",
+      "descripcionDetallada": "Cuerpo de aliso, mástil de arce, pastillas single coil.",
+      "precio": 1200,
+      "stock": "6",
+      "categoria": "Guitarras",
+      "imagenes": [
+        "guitarra_02.jpg",
+        "guitarra_02.jpg",
+        "guitarra_03.jpg",
+        "guitarra_04.jpg",
+        "guitarra_05.jpg",
+        "guitarra_06.jpg"
+      ]
     },
     {
-      "id": 2,
-      "name": "Gibson Les Paul",
-      "category": "guitarras",
-      "description": "Guitarra con cuerpo sólido ideal para hard rock.",
-      "image": "/img/gibson.jpg",
-      "price": 1500,
-      "stock": 2
+      "id": "2",
+      "nombre": "Gibson Les Paul",
+      "descripcion": "Guitarra con tono cálido y potente.",
+      "descripcionDetallada": "Cuerpo de caoba y tapa de arce. Dos humbuckers para un sonido grueso y sustain infinito. Usada en hard rock y metal.",
+      "precio": 1400,
+      "stock": 0,
+      "categoria": "Guitarras",
+      "imagenes": [
+        "lespaul1.jpg",
+        "lespaul2.jpg",
+        "lespaul3.jpg",
+        "lespaul4.jpg",
+        "lespaul5.jpg",
+        "lespaul6.jpg"
+      ]
     },
     {
-      "id": 3,
-      "name": "Tama Starclassic",
-      "category": "baterias",
-      "description": "Batería profesional de 5 cuerpos con sonido poderoso.",
-      "image": "/img/tama.jpg",
-      "price": 2500,
-      "stock": 1
+      "id": "3",
+      "nombre": "Yamaha P-45",
+      "descripcion": "Piano digital portátil.",
+      "descripcionDetallada": "Teclado de 88 teclas con acción de martillo. Sonido de piano acústico.",
+      "precio": 600,
+      "stock": 2,
+      "categoria": "Pianos",
+      "imagenes": [
+        "piano_01.jpg",
+        "piano_02.jpg",
+        "piano_03.jpg",
+        "piano_04.jpg",
+        "piano_05.jpg",
+        "piano_06.jpg"
+      ]
     },
     {
-      "id": 4,
-      "name": "Yamaha Stage Custom",
-      "category": "baterias",
-      "description": "Excelente batería acústica para estudios y escenarios.",
-      "image": "/img/yamaha_bateria.jpg",
-      "price": 1400,
-      "stock": 4
-    },
-    {
-      "id": 5,
-      "name": "Yamaha P-45",
-      "category": "pianos",
-      "description": "Piano digital de 88 teclas con acción realista.",
-      "image": "/img/yamaha_p45.jpg",
-      "price": 600,
-      "stock": 5
-    },
-    {
-      "id": 6,
-      "name": "Casio Privia PX-160",
-      "category": "pianos",
-      "description": "Piano digital versátil y portátil con buena respuesta.",
-      "image": "/img/casio.jpg",
-      "price": 550,
-      "stock": 6
+      "id": "1745459672938",
+      "nombre": "Bateria god",
+      "descripcion": "bateria anashe",
+      "descripcionDetallada": "asdasdasdas",
+      "precio": "5000",
+      "stock": "1",
+      "categoria": "Baterias",
+      "imagenes": [
+        "bateria_01.jpg",
+        "bateria_02.jpg"
+      ]
     }
-],
-"usuarios": [
-      {
-        "id": "7744",
-        "username": "dieguito",
-        "email": "diegomartinezcapo@gmail.com",
-        "password": "dieguito",
-        "nombre": "Diego Joaquin",
-        "apellido": "Martinez Auqui",
-        "rol": "admin"
-      },
-      {
-        "id": "31de",
-        "username": "usuarioanashe",
-        "email": "user@mail.com",
-        "password": "123456",
-        "nombre": "Prueba",
-        "apellido": "Muñeco",
-        "rol": "user"
-      }
-    ]
-  }
-
+  ],
+  "usuarios": [
+    {
+      "id": "7744",
+      "username": "dieguito",
+      "email": "diegomartinezcapo@gmail.com",
+      "password": "dieguito",
+      "nombre": "Diego Joaquin",
+      "apellido": "Martinez Auqui",
+      "rol": "admin"
+    },
+    {
+      "id": "31de",
+      "username": "usuarioanashe",
+      "email": "user@mail.com",
+      "password": "123456",
+      "nombre": "Prueba",
+      "apellido": "Muñeco",
+      "rol": "user"
+    }
+  ]
+}

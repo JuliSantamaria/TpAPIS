@@ -17,7 +17,7 @@ export default function Login() {
 
     try {
       // Obtenemos todos los usuarios registrados desde el JSON
-      const res = await axios.get("http://localhost:3001/usuarios");
+      const res = await axios.get("http://localhost:3002/usuarios");
       const usuarios = res.data;
 
       // Buscamos si existe un usuario que coincida
