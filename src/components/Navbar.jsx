@@ -1,12 +1,23 @@
-
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [showCategorias, setShowCategorias] = useState(false);
+  const [categorias, setCategorias] = useState([]); // Estado para las categorías
+
+  // Obtener categorías dinámicamente desde el backend
+  useEffect(() => {
+    fetch("http://localhost:3002/productos")
+      .then((res) => res.json())
+      .then((data) => {
+        const categoriasUnicas = [...new Set(data.map((prod) => prod.categoria))];
+        setCategorias(categoriasUnicas);
+      })
+      .catch((err) => console.error("Error al cargar categorías:", err));
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -14,31 +25,38 @@ export default function Navbar() {
   };
 
   return (
-    <nav style={{ padding: '10px', borderBottom: '1px solid #ccc', display: 'flex', gap: '15px', alignItems: 'center' }}>
+    <nav style={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", gap: "15px", alignItems: "center" }}>
       <Link to="/">Inicio</Link>
 
       {/* Categorías con dropdown */}
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: "relative" }}>
         <button
           onClick={() => setShowCategorias(!showCategorias)}
-          style={{ cursor: 'pointer', background: 'none', border: 'none', color: 'blue' }}
+          style={{ cursor: "pointer", background: "none", border: "none", color: "blue" }}
         >
           Categorías ⏷
         </button>
         {showCategorias && (
           <div
             style={{
-              position: 'absolute',
-              backgroundColor: '#fff',
-              border: '1px solid #ccc',
-              padding: '10px',
-              top: '30px',
-              zIndex: 1000
+              position: "absolute",
+              backgroundColor: "#fff",
+              border: "1px solid #ccc",
+              padding: "10px",
+              top: "30px",
+              zIndex: 1000,
             }}
           >
-            <Link to="/categoria/guitarras" onClick={() => setShowCategorias(false)}>Guitarras</Link><br />
-            <Link to="/categoria/baterias" onClick={() => setShowCategorias(false)}>Baterías</Link><br />
-            <Link to="/categoria/pianos" onClick={() => setShowCategorias(false)}>Pianos</Link>
+            {categorias.map((categoria, index) => (
+              <Link
+                key={index}
+                to={`/categoria/${categoria.toLowerCase()}`}
+                onClick={() => setShowCategorias(false)}
+                style={{ display: "block", marginBottom: "5px" }}
+              >
+                {categoria}
+              </Link>
+            ))}
           </div>
         )}
       </div>
