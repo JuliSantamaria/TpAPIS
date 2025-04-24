@@ -1,5 +1,6 @@
 import { useCart } from "../context/CartContext";
-import "./carrito.css";
+
+import "../assets/carrito.css"
 
 export default function Cart() {
   const { cartItems, removeFromCart, updateQuantity, total } = useCart();
