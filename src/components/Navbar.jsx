@@ -33,7 +33,7 @@ export default function Navbar() {
       <div style={{ position: "relative" }}>
         <button
           onClick={() => setShowCategorias(!showCategorias)}
-          style={{ cursor: "pointer", background: "none", border: "none", color: "blue" }}
+          style={{ cursor: "pointer", background: "none", border: "none", color: "orange" }}
         >
           Categorías ⏷
         </button>
@@ -44,8 +44,9 @@ export default function Navbar() {
               backgroundColor: "#fff",
               border: "1px solid #ccc",
               padding: "10px",
-              top: "30px",
+              top: "47px",
               zIndex: 1000,
+              
             }}
           >
             {categorias.map((categoria, index) => (

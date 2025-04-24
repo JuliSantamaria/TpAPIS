@@ -53,15 +53,27 @@
     },
     {
       "id": "1745459672938",
-      "nombre": "Bateria god",
-      "descripcion": "bateria anashe",
-      "descripcionDetallada": "asdasdasdas",
+      "nombre": "Bateria",
+      "descripcion": "bateria",
+      "descripcionDetallada": "bateria",
       "precio": "5000",
       "stock": "1",
       "categoria": "Baterias",
       "imagenes": [
         "bateria_01.jpg",
         "bateria_02.jpg"
+      ]
+    },
+    {
+      "id": "1745529004501",
+      "nombre": "Guitarra acustica fender",
+      "descripcion": "Guitarra de 6 cuerdas acustica",
+      "descripcionDetallada": "Guitarra acustica fender de 6 cuerdas",
+      "precio": "6000",
+      "stock": "3",
+      "categoria": "Guitarras",
+      "imagenes": [
+        "guitarra fender.jpeg"
       ]
     }
   ],
