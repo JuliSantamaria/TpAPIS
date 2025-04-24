@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./Login.css"; // ✅ Importás los estilos
+import '../assets/Login.css';
 
 
 export default function Login() {

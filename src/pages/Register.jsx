@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import './Register.css'; // ✅ Importamos el CSS propio
+import '../assets/Register.css'; // ✅ Importamos el CSS propio
 
 export default function Register() {
   const [user, setUser] = useState({

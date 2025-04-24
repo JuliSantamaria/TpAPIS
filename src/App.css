@@ -1,13 +1,16 @@
 /* Fondo general y texto */
 body {
   margin: 0;
-  background-image: url('/img/dark-wood.png');
+  padding: 0;
+  background-image: url('/img/dark-wood.png'); /* ✅ Ruta desde public/ */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+  background-attachment: fixed;
   color: #f5f5f5;
   font-family: 'Segoe UI', sans-serif;
 }
+
 
 /* Contenedor principal */
 #root {
