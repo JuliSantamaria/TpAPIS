@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-
+import { useCart } from "../context/CartContext"; // 👈 Importar el hook
 
 export default function ProductDetail() {
   const { id } = useParams();

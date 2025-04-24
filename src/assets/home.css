@@ -1,4 +1,3 @@
-/* Home.css */
 
 .container {
     width: 100%;
@@ -45,12 +44,21 @@
   
   .product-image {
     width: 100%;
-    height: 150px;
-    object-fit: cover;
+    max-height: 300px;
+    object-fit: contain; /* cambia de cover a contain */
     border-radius: 8px;
     margin-bottom: 0.5rem;
+    background-color: #f9f9f9; /* opcional para que no se vea vacío */
   }
   
+  h3{
+    color: black;
+  }
+
+  p{
+    color: black;
+  }
+
   .product-status-in-stock {
     color: green;
   }

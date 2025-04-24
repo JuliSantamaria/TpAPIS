@@ -12,13 +12,13 @@ export default function ProductCard({ product }) {
         alt={nombre}
         style={{ width: "100%", maxHeight: "150px", objectFit: "cover", borderRadius: "8px" }}
       />
-      <h3 className="text-lg font-semibold mt-2">{nombre}</h3>
-      <p className="text-sm text-gray-600">{descripcion}</p>
-      <p className="text-sm text-gray-600 mt-1">Stock: {stock}</p>
-      <p className="font-bold mt-1">${precio}</p>
+      <h3 >{nombre}</h3>
+      <p >{descripcion}</p>
+      <p >Stock: {stock}</p>
+      <p >${precio}</p>
       {stock > 0 ? (
         <button
-          className="mt-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+          
           onClick={() => {
             console.log("Click en agregar al carrito");
             addToCart(product);
@@ -27,7 +27,7 @@ export default function ProductCard({ product }) {
           Agregar al carrito
         </button>
       ) : (
-        <p className="text-red-600 font-semibold mt-2">Sin stock</p>
+        <p >Sin stock</p>
       )}
     </div>
   );
