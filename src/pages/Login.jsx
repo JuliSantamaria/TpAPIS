@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import '../assets/Login.css';
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -37,30 +39,31 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <h2>Iniciar Sesión</h2>
+    <div className="login-container">
+      <h2 className="login-title">Iniciar sesión</h2>
       <form onSubmit={handleSubmit}>
         <input
+          className="login-input"
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-        /><br/>
-
+        />
+  
         <input
+          className="login-input"
           type="password"
           placeholder="Contraseña"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-        /><br/>
-
-        <button type="submit">Entrar</button>
+        />
+  
+        <button className="login-button" type="submit">
+          Entrar
+        </button>
       </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="login-error">{error}</p>}
     </div>
-  );
-}
-
-
+  );}

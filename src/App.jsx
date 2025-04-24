@@ -3,7 +3,6 @@ import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import { CartProvider } from './context/CartContext';
 
-
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -12,6 +11,7 @@ import Cart from './pages/Cart';
 import AdminPanel from './pages/AdminPanel';
 import Profile from './pages/Profile';
 import CategoryPage from './pages/CategoryPage';
+import './App.css';
 
 
 
