@@ -6,7 +6,7 @@
       "descripcion": "Guitarra eléctrica con gran versatilidad.",
       "descripcionDetallada": "Cuerpo de aliso, mástil de arce, pastillas single coil.",
       "precio": 1200,
-      "stock": 5,
+      "stock": "6",
       "categoria": "Guitarras",
       "imagenes": [
         "guitarra_02.jpg",
@@ -50,27 +50,39 @@
         "piano_05.jpg",
         "piano_06.jpg"
       ]
+    },
+    {
+      "id": "1745459672938",
+      "nombre": "Bateria god",
+      "descripcion": "bateria anashe",
+      "descripcionDetallada": "asdasdasdas",
+      "precio": "5000",
+      "stock": "1",
+      "categoria": "Baterias",
+      "imagenes": [
+        "bateria_01.jpg",
+        "bateria_02.jpg"
+      ]
     }
-],
-"usuarios": [
-      {
-        "id": "7744",
-        "username": "dieguito",
-        "email": "diegomartinezcapo@gmail.com",
-        "password": "dieguito",
-        "nombre": "Diego Joaquin",
-        "apellido": "Martinez Auqui",
-        "rol": "admin"
-      },
-      {
-        "id": "31de",
-        "username": "usuarioanashe",
-        "email": "user@mail.com",
-        "password": "123456",
-        "nombre": "Prueba",
-        "apellido": "Muñeco",
-        "rol": "user"
-      }
-    ]
-  }
-
+  ],
+  "usuarios": [
+    {
+      "id": "7744",
+      "username": "dieguito",
+      "email": "diegomartinezcapo@gmail.com",
+      "password": "dieguito",
+      "nombre": "Diego Joaquin",
+      "apellido": "Martinez Auqui",
+      "rol": "admin"
+    },
+    {
+      "id": "31de",
+      "username": "usuarioanashe",
+      "email": "user@mail.com",
+      "password": "123456",
+      "nombre": "Prueba",
+      "apellido": "Muñeco",
+      "rol": "user"
+    }
+  ]
+}
