@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
-import '../assets/Register.css'; // ✅ Importamos el CSS propio
+import { useNavigate } from 'react-router-dom';
+import '../assets/Register.css';
 
 export default function Register() {
   const [user, setUser] = useState({
@@ -9,8 +10,8 @@ export default function Register() {
     password: '',
     nombre: '',
     apellido: '',
-    rol: 'user'
   });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -19,8 +20,15 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3001/usuarios', user);
+      // Crear usuario con ID único
+      const newUser = {
+        ...user,
+        id: Date.now().toString()
+      };
+      
+      await axios.post('http://localhost:3002/usuarios', newUser);
       alert('Usuario registrado correctamente');
+      navigate('/login'); // Redirigir al login después del registro
     } catch (error) {
       console.error("🔥 Error en el registro:", error);
       alert(error.response?.data?.mensaje || "Error al registrar usuario");
@@ -82,4 +90,5 @@ export default function Register() {
         </button>
       </form>
     </div>
-  );}
+  );
+}
