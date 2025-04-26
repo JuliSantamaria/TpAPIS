@@ -1,0 +1,42 @@
+formulario {
+  width: 100%;
+  height: 34px;
+  margin-bottom: 10px;
+  padding: 6px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: inherit;
+  box-sizing: border-box;
+}
+
+/* Estilos del botón */
+button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+  margin-right: 5px;
+}
+
+/* Tabla */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Botones específicos */
+.edit-button {
+  background-color: #2196F3;
+}
+
+.delete-button {
+  background-color: #f44336;
+}

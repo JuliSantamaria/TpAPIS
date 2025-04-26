@@ -77,7 +77,7 @@ export default function Navbar() {
             Bienvenido, <strong>{user.nombre}</strong>
           </span>
           <Link to="/profile">Perfil</Link>
-          {user.rol === "admin" && <Link to="/admin">Panel Admin</Link>}
+          <Link to="/gestion-productos">Gestion Productos</Link>
           <button onClick={handleLogout} style={{ marginLeft: "10px" }}>
             Cerrar sesión
           </button>

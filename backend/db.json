@@ -2,6 +2,7 @@
   "productos": [
     {
       "id": "1",
+      "userId": "7744",
       "nombre": "Fender Stratocaster",
       "descripcion": "Guitarra eléctrica con gran versatilidad.",
       "descripcionDetallada": "Cuerpo de aliso, mástil de arce, pastillas single coil.",
@@ -19,6 +20,7 @@
     },
     {
       "id": "2",
+      "userId": "7744",
       "nombre": "Gibson Les Paul",
       "descripcion": "Guitarra con tono cálido y potente.",
       "descripcionDetallada": "Cuerpo de caoba y tapa de arce. Dos humbuckers para un sonido grueso y sustain infinito. Usada en hard rock y metal.",
@@ -36,6 +38,7 @@
     },
     {
       "id": "3",
+      "userId": "31de",
       "nombre": "Yamaha P-45",
       "descripcion": "Piano digital portátil.",
       "descripcionDetallada": "Teclado de 88 teclas con acción de martillo. Sonido de piano acústico.",
@@ -53,6 +56,7 @@
     },
     {
       "id": "1745459672938",
+      "userId": "7744",
       "nombre": "Bateria",
       "descripcion": "bateria",
       "descripcionDetallada": "bateria",
@@ -66,6 +70,7 @@
     },
     {
       "id": "1745529004501",
+      "userId": "31de",
       "nombre": "Guitarra acustica fender",
       "descripcion": "Guitarra de 6 cuerdas acustica",
       "descripcionDetallada": "Guitarra acustica fender de 6 cuerdas",
@@ -75,6 +80,19 @@
       "imagenes": [
         "guitarra fender.jpeg"
       ]
+    },
+    {
+      "id": "1745548514310",
+      "nombre": "Bateria anashe",
+      "descripcion": "dd",
+      "descripcionDetallada": "hghgh",
+      "precio": "4500",
+      "stock": "4",
+      "categoria": "Baterias",
+      "imagenes": [
+        "bateria_06.jpg"
+      ],
+      "userId": "31de"
     }
   ],
   "usuarios": [
@@ -84,8 +102,7 @@
       "email": "diegomartinezcapo@gmail.com",
       "password": "dieguito",
       "nombre": "Diego Joaquin",
-      "apellido": "Martinez Auqui",
-      "rol": "admin"
+      "apellido": "Martinez Auqui"
     },
     {
       "id": "31de",
@@ -93,8 +110,7 @@
       "email": "user@mail.com",
       "password": "123456",
       "nombre": "Prueba",
-      "apellido": "Muñeco",
-      "rol": "user"
+      "apellido": "Muñeco"
     }
   ]
 }
