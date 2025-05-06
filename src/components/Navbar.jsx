@@ -2,14 +2,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useState, useEffect } from "react";
 import '../assets/Navbar.css';
+import { useCart } from "../context/CartContext";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [showCategorias, setShowCategorias] = useState(false);
-  const [categorias, setCategorias] = useState([]); // Estado para las categorías
+  const [categorias, setCategorias] = useState([]);
+  const { total } = useCart();
 
-  // Obtener categorías dinámicamente desde el backend
   useEffect(() => {
     fetch("http://localhost:3002/productos")
       .then((res) => res.json())
@@ -26,63 +27,50 @@ export default function Navbar() {
   };
 
   return (
-    <nav style={{ padding: "10px", borderBottom: "1px solid #ccc", display: "flex", gap: "15px", alignItems: "center" }}>
-      <Link to="/">Inicio</Link>
-
-      {/* Categorías con dropdown */}
-      <div style={{ position: "relative" }}>
-        <button
-          onClick={() => setShowCategorias(!showCategorias)}
-          style={{ cursor: "pointer", background: "none", border: "none", color: "orange" }}
-        >
-          Categorías ⏷
-        </button>
-        {showCategorias && (
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: "#fff",
-              border: "1px solid #ccc",
-              padding: "10px",
-              top: "47px",
-              zIndex: 1000,
-              
-            }}
-          >
-            {categorias.map((categoria, index) => (
-              <Link
-                key={index}
-                to={`/categoria/${categoria.toLowerCase()}`}
-                onClick={() => setShowCategorias(false)}
-                style={{ display: "block", marginBottom: "5px" }}
-              >
-                {categoria}
-              </Link>
-            ))}
-          </div>
-        )}
+    <nav className="navbar">
+      <div className="navbar-left">
+      <Link to="/" className="logo">
+        <img src="/img/logobandup.png" alt="Logo Band Up" className="logo-img" />
+      </Link>
+        <div className="categoria-dropdown">
+          <button onClick={() => setShowCategorias(!showCategorias)}>
+            ☰ CATEGORÍAS
+          </button>
+          {showCategorias && (
+            <div className="dropdown-menu">
+              {categorias.map((categoria, i) => (
+                <Link key={i} to={`/categoria/${categoria.toLowerCase()}`} onClick={() => setShowCategorias(false)}>
+                  {categoria}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
-      <Link to="/cart">Carrito</Link>
+      <div className="navbar-center">
+        <input type="text" placeholder="Buscar productos" />
+        <button className="search-btn">🔍</button>
+      </div>
 
-      {!user && (
-        <>
-          <Link to="/login">Login</Link>
-          <Link to="/register">Registro</Link>
-        </>
-      )}
-      {user && (
-        <>
-          <span style={{ marginLeft: "10px" }}>
-            Bienvenido, <strong>{user.nombre}</strong>
-          </span>
-          <Link to="/profile">Perfil</Link>
-          <Link to="/gestion-productos">Gestion Productos</Link>
-          <button onClick={handleLogout} style={{ marginLeft: "10px" }}>
-            Cerrar sesión
-          </button>
-        </>
-      )}
+      <div className="navbar-right">
+        {!user ? (
+          <>
+            <Link to="/login">INGRESAR</Link> / <Link to="/register">REGISTRARSE</Link>
+          </>
+        ) : (
+          <>
+            <span>Hola, {user.nombre}</span>
+            <Link to="/profile">Mi cuenta</Link>
+            <Link to="/gestion-productos">Gestión</Link>
+            <button onClick={handleLogout}>Salir</button>
+          </>
+        )}
+        <Link to="/wishlist">♡</Link>
+        <Link to="/compare">⇄</Link>
+        <Link to="/cart">🛒 ${total.toFixed(2)}</Link>
+
+      </div>
     </nav>
   );
 }

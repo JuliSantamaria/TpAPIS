@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import "../assets/home.css";
+import Carousel from "../components/Carousel";
 
 export default function Home() {
   const [productos, setProductos] = useState([]);
@@ -17,6 +18,7 @@ export default function Home() {
 
   return (
     <div className="container">
+      <Carousel/>
       <h2 className="text-2xl font-bold my-5 text-center">Catálogo de Productos</h2>
       
       <div className="products-grid">

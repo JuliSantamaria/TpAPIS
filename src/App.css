@@ -1,8 +1,8 @@
-/* Fondo general y texto */
+
 body {
   margin: 0;
   padding: 0;
-  background-image: url('/img/dark-wood.png'); /* ✅ Ruta desde public/ */
+  background-image: url('/img/dark-wood.png'); 
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -12,11 +12,16 @@ body {
 }
 
 
+
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
 /* Contenedor principal */
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
@@ -62,7 +67,6 @@ nav {
   background-color: #2c2c2c;
   padding: 1rem;
   margin-bottom: 2rem;
-  border-bottom: 2px solid #ff6b00;
 }
 
 nav a {
