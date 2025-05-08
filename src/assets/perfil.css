@@ -7,7 +7,7 @@
     border: 1px solid #e0e0e0;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    color: #333; /* Color de texto oscuro */
+    color: #333;
   }
   
   .profile-container h1 {
@@ -45,5 +45,39 @@
     text-align: center;
     color: #777;
     font-style: italic;
+  }
+  
+  .toggle-button {
+    margin: 20px 0;
+    padding: 10px 16px;
+    background-color: #e63946;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    transition: background-color 0.3s;
+  }
+  
+  .toggle-button:hover {
+    background-color: orange;
+  }
+  
+  .productos-lista {
+    margin-top: 10px;
+    background-color: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px 15px;
+  }
+  
+  .producto-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .producto-item:last-child {
+    border-bottom: none;
   }
   
