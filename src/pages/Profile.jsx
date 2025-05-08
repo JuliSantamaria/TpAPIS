@@ -1,12 +1,13 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext.jsx'; // Ajusta la ruta a tu AuthContext
+import '../assets/perfil.css';
 
 export default function Profile() {
   const { user } = useAuth();
   const claveExcluida = ['id', 'password'];
 
   return (
-    <div>
+    <div className="profile-container">
       <h1>Perfil</h1>
       {user ? (
         <table>

@@ -37,7 +37,7 @@ export default function Home() {
   return (
     <div className="container">
       <Carousel/>
-      <h2 className="text-2xl font-bold my-5 text-center">Catálogo de Productos</h2>
+      <h2 className="full-width-header">Catálogo de Productos</h2>
       
       {filteredProducts.length > 0 ? (
         <div className="products-grid">
