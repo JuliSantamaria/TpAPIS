@@ -30,8 +30,6 @@ function App() {
             <Route path="/gestion-productos" element={<GestionProductos />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/categoria/:nombre" element={<CategoryPage />} />
-            
-
           </Routes>
         </Router>
       </CartProvider>

@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useState, useEffect } from "react";
 import '../assets/Navbar.css';
 import { useCart } from "../context/CartContext";
+import SearchBar from "./SearchBar";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -29,9 +30,9 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-left">
-      <Link to="/" className="logo">
-        <img src="/img/logobandup.png" alt="Logo Band Up" className="logo-img" />
-      </Link>
+        <Link to="/" className="logo">
+          <img src="/img/logobandup.png" alt="Logo Band Up" className="logo-img" />
+        </Link>
         <div className="categoria-dropdown">
           <button onClick={() => setShowCategorias(!showCategorias)}>
             ☰ CATEGORÍAS
@@ -49,8 +50,7 @@ export default function Navbar() {
       </div>
 
       <div className="navbar-center">
-        <input type="text" placeholder="Buscar productos" />
-        <button className="search-btn">🔍</button>
+        <SearchBar />
       </div>
 
       <div className="navbar-right">
@@ -69,7 +69,6 @@ export default function Navbar() {
         <Link to="/wishlist">♡</Link>
         <Link to="/compare">⇄</Link>
         <Link to="/cart">🛒 ${total.toFixed(2)}</Link>
-
       </div>
     </nav>
   );
