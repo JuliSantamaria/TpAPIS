@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import '../assets/Navbar.css';
 
 export default function SearchBar() {
   const [searchTerm, setSearchTerm] = useState('');

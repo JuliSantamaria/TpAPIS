@@ -2,12 +2,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useState, useEffect } from "react";
 import '../assets/Navbar.css';
-<<<<<<< HEAD
 import { useCart } from "../context/CartContext.jsx";
-=======
-import { useCart } from "../context/CartContext";
-import SearchBar from "./SearchBar";
->>>>>>> 41f7df9ee794b5c0c2bc2860093d4f194e8e48f9
+import SearchBar from "./SearchBar.jsx";
+
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -34,9 +31,9 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <Link to="/" className="logo">
-          <img src="/img/logobandup.png" alt="Logo Band Up" className="logo-img" />
-        </Link>
+      <Link to="/" className="logo">
+        <img src="/img/logobandup.png" alt="Logo Band Up" className="logo-img" />
+      </Link>
         <div className="categoria-dropdown">
           <button onClick={() => setShowCategorias(!showCategorias)}>
             ☰ CATEGORÍAS
@@ -54,7 +51,7 @@ export default function Navbar() {
       </div>
 
       <div className="navbar-center">
-        <SearchBar />
+        <SearchBar></SearchBar>
       </div>
 
       <div className="navbar-right">
@@ -71,16 +68,10 @@ export default function Navbar() {
             </button>
           </>
         )}
-<<<<<<< HEAD
         <button onClick={toggleCart} className="cart-button">
         🛒 ${total.toFixed(2)}
         </button>
 
-=======
-        <Link to="/wishlist">♡</Link>
-        <Link to="/compare">⇄</Link>
-        <Link to="/cart">🛒 ${total.toFixed(2)}</Link>
->>>>>>> 41f7df9ee794b5c0c2bc2860093d4f194e8e48f9
       </div>
     </nav>
   );
