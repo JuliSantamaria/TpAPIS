@@ -12,7 +12,7 @@ export default function CartSidebar({ isOpen, onClose }) {
       </div>
 
       {cartItems.length === 0 ? (
-        <div classNa  me="cart-empty">
+        <div className="cart-empty">
           <p>No hay productos en el carrito.</p>
           <button onClick={onClose}>REGRESAR A LA TIENDA</button>
         </div>

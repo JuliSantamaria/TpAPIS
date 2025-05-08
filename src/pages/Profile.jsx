@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '../context/authContext'; // Ajusta la ruta a tu AuthContext
+import { useAuth } from '../context/AuthContext.jsx'; // Ajusta la ruta a tu AuthContext
 
 export default function Profile() {
   const { user } = useAuth();
