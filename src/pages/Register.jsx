@@ -39,7 +39,7 @@ export default function Register() {
     <div className="register-container">
       <h2 className="register-title">Registro de Usuario</h2>
   
-      <form onSubmit={handleSubmit}>
+      <form className="form-box" onSubmit={handleSubmit}>
         <input
           className="register-input"
           type="text"
@@ -90,5 +90,4 @@ export default function Register() {
         </button>
       </form>
     </div>
-  );
-}
+  );}
