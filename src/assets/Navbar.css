@@ -5,7 +5,7 @@
   background-color: #000;
   padding: 3px 30px;
   color: white;
-  font-family: sans-serif;
+  font-family: 'Lato', 'Arial', 'Helvetica', sans-serif;
   height: 150px;
   position: relative;
   left: 50%;
@@ -85,12 +85,29 @@
   cursor: pointer;
 }
 
-.navbar-right button {
-  background: none;
-  border: none;
-  color: white;
-  margin-left: 10px;
-  cursor: pointer;
+
+.navbar-right span {
+  margin-right: 20px;
 }
 
+.navbar-center input {
+  background-color: white;
+  border-radius: 0px;
+}
+
+.navbar-right button {
+  background-color: #e63946;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  font-family: 'Lato', 'Arial', 'Helvetica', sans-serif;
+  font-size: 15px;
+}
+
+.navbar-right button:hover {
+  background-color: #d62828;
+}
 

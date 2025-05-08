@@ -13,6 +13,8 @@ export default function ProductDetail() {
   const { user } = useAuth();
 
   useEffect(() => {
+    console.log("ID del producto:", id);
+    
     fetch(`http://localhost:3002/productos/${id}`)
       .then((res) => {
         if (!res.ok) {

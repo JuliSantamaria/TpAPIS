@@ -55,13 +55,13 @@
       ]
     },
     {
-      "id": "1745459672938",
-      "userId": "7744",
+      "id": 1745459672938,
+      "userId": 7744,
       "nombre": "Bateria",
       "descripcion": "bateria",
       "descripcionDetallada": "bateria",
-      "precio": "5000",
-      "stock": "1",
+      "precio": 5000,
+      "stock": 1,
       "categoria": "Baterias",
       "imagenes": [
         "bateria_01.jpg",

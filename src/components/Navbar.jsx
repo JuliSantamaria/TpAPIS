@@ -2,14 +2,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useState, useEffect } from "react";
 import '../assets/Navbar.css';
-import { useCart } from "../context/CartContext";
+import { useCart } from "../context/CartContext.jsx";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [showCategorias, setShowCategorias] = useState(false);
   const [categorias, setCategorias] = useState([]);
-  const { total } = useCart();
+  const { total, toggleCart } = useCart();
 
   useEffect(() => {
     fetch("http://localhost:3002/productos")
@@ -62,13 +62,14 @@ export default function Navbar() {
           <>
             <span>Hola, {user.nombre}</span>
             <Link to="/profile">Mi cuenta</Link>
-            <Link to="/gestion-productos">Gestión</Link>
-            <button onClick={handleLogout}>Salir</button>
+            <Link to="/gestion-productos">Gestion de productos</Link>
+            <button  onClick={handleLogout}>Cerrar sesion
+            </button>
           </>
         )}
-        <Link to="/wishlist">♡</Link>
-        <Link to="/compare">⇄</Link>
-        <Link to="/cart">🛒 ${total.toFixed(2)}</Link>
+        <button onClick={toggleCart} className="cart-button">
+        🛒 ${total.toFixed(2)}
+        </button>
 
       </div>
     </nav>

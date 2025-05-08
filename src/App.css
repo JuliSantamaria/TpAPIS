@@ -38,19 +38,7 @@ input {
 }
 
 /* Estilo de botones */
-button {
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
-  border: none;
-  background-color: #FF6B00;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
 
-button:hover {
-  background-color: #ff8533;
-}
 
 /* Tarjetas */
 .card {
