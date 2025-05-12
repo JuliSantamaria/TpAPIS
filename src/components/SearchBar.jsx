@@ -1,48 +1,32 @@
-import { useState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../assets/Navbar.css';
 
 export default function SearchBar() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchParams, setSearchParams] = useSearchParams();
-  const scrollPosition = useRef(0);
+  const navigate = useNavigate();
 
-  // Inicializar searchTerm con el valor de la URL si existe
-  useEffect(() => {
-    const query = searchParams.get('q');
-    if (query) setSearchTerm(query);
-  }, []);
-
-  const handleChange = (e) => {
-    // Guardar la posición actual del scroll
-    scrollPosition.current = window.scrollY;
-    
-    const value = e.target.value;
-    setSearchTerm(value);
-    
-    // Actualizar URL y restaurar la posición del scroll
-    if (value.trim()) {
-      setSearchParams({ q: value.trim() }, { replace: true });
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/?q=${encodeURIComponent(searchTerm.trim())}`);
     } else {
-      setSearchParams({}, { replace: true });
+      navigate('/');
     }
-
-    // Restaurar la posición del scroll después de un pequeño retraso
-    requestAnimationFrame(() => {
-      window.scrollTo(0, scrollPosition.current);
-    });
   };
 
   return (
-    <form className="search-form" onSubmit={(e) => e.preventDefault()}>
+    <form className="search-form" onSubmit={handleSearch}>
       <input
         type="text"
         value={searchTerm}
-        onChange={handleChange}
+        onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Buscar productos"
         className="search-input"
       />
-      <button type="button" className="search-btn">🔍</button>
+      <button type="submit" className="search-btn" aria-label="Buscar">
+        🔍
+      </button>
     </form>
   );
 }
