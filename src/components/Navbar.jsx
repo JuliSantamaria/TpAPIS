@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import '../assets/Navbar.css';
 import { useCart } from "../context/CartContext.jsx";
 import SearchBar from "./SearchBar.jsx";
@@ -10,18 +10,8 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [showCategorias, setShowCategorias] = useState(false);
-  const [categorias, setCategorias] = useState([]);
+  const CATEGORIAS = ["Guitarras", "Baterias", "Pianos", "Viento", "Percusion"];
   const { total, toggleCart } = useCart();
-
-  useEffect(() => {
-    fetch("http://localhost:3002/productos")
-      .then((res) => res.json())
-      .then((data) => {
-        const categoriasUnicas = [...new Set(data.map((prod) => prod.categoria))];
-        setCategorias(categoriasUnicas);
-      })
-      .catch((err) => console.error("Error al cargar categorías:", err));
-  }, []);
 
   const handleLogout = () => {
     logout();
@@ -40,7 +30,7 @@ export default function Navbar() {
           </button>
           {showCategorias && (
             <div className="dropdown-menu">
-              {categorias.map((categoria, i) => (
+              {CATEGORIAS.map((categoria, i) => (
                 <Link key={i} to={`/categoria/${categoria.toLowerCase()}`} onClick={() => setShowCategorias(false)}>
                   {categoria}
                 </Link>

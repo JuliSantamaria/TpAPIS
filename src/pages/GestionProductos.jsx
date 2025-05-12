@@ -4,7 +4,7 @@ import "../assets/GestionProductos.css";
 
 export default function GestionProductos() {
   const [productos, setProductos] = useState([]);
-  const [categorias, setCategorias] = useState([]);
+  const CATEGORIAS = ["Guitarras", "Baterias", "Pianos", "Viento", "Percusion"];
   const [formData, setFormData] = useState({
     id: "",
     nombre: "",
@@ -15,7 +15,6 @@ export default function GestionProductos() {
     categoria: "",
     imagenes: "",
   });
-  const [newCategoria, setNewCategoria] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState("");
   const { user } = useAuth();
@@ -28,8 +27,6 @@ export default function GestionProductos() {
       .then((data) => {
         const misProductos = data.filter((prod) => prod.userId === user.id);
         setProductos(misProductos);
-        const categoriasUnicas = [...new Set(data.map((prod) => prod.categoria))];
-        setCategorias(categoriasUnicas);
       })
       .catch((err) => console.error("Error al cargar productos:", err));
   }, [user]);
@@ -37,10 +34,6 @@ export default function GestionProductos() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  };
-
-  const handleNewCategoriaChange = (e) => {
-    setNewCategoria(e.target.value);
   };
 
   const validateForm = () => {
@@ -80,13 +73,6 @@ export default function GestionProductos() {
       : "¿Estás seguro de que deseas agregar este producto?";
     if (!window.confirm(confirmMessage)) return;
 
-    const categoriaFinal = newCategoria || formData.categoria;
-
-    if (newCategoria && !categorias.includes(newCategoria)) {
-      setCategorias((prev) => [...prev, newCategoria]);
-      setNewCategoria("");
-    }
-
     if (isEditing) {
       const producto = productos.find((p) => p.id === formData.id);
       if (producto?.userId !== user.id) {
@@ -99,7 +85,6 @@ export default function GestionProductos() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
-          categoria: categoriaFinal,
           imagenes: formData.imagenes.split(","),
           userId: user.id,
         }),
@@ -131,7 +116,6 @@ export default function GestionProductos() {
         body: JSON.stringify({
           ...formData,
           id: Date.now().toString(),
-          categoria: categoriaFinal,
           imagenes: formData.imagenes.split(","),
           userId: user.id,
         }),
@@ -247,20 +231,15 @@ export default function GestionProductos() {
             name="categoria"
             value={formData.categoria}
             onChange={handleChange}
+            required
           >
             <option value="">Seleccionar categoría</option>
-            {categorias.map((categoria, index) => (
+            {CATEGORIAS.map((categoria, index) => (
               <option key={index} value={categoria}>
                 {categoria}
               </option>
             ))}
           </select>
-          <input
-            type="text"
-            placeholder="Nueva categoría (opcional)"
-            value={newCategoria}
-            onChange={handleNewCategoriaChange}
-          />
           <input
             type="text"
             name="imagenes"
