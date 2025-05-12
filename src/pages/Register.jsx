@@ -20,7 +20,6 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Crear usuario con ID único
       const newUser = {
         ...user,
         id: Date.now().toString()
@@ -28,7 +27,7 @@ export default function Register() {
       
       await axios.post('http://localhost:3002/usuarios', newUser);
       alert('Usuario registrado correctamente');
-      navigate('/login'); // Redirigir al login después del registro
+      navigate('/login'); 
     } catch (error) {
       console.error("🔥 Error en el registro:", error);
       alert(error.response?.data?.mensaje || "Error al registrar usuario");

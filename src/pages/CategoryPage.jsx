@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 
 export default function CategoryPage() {
-  const { nombre } = useParams(); // nombre de la categoría desde la URL
+  const { nombre } = useParams(); 
   const [productos, setProductos] = useState([]);
   const [filtrados, setFiltrados] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3002/productos") // Ruta de json-server
+    fetch("http://localhost:3002/productos") 
       .then((res) => res.json())
       .then((data) => {
         setProductos(data);
