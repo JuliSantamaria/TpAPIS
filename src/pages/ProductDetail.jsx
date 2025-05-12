@@ -24,7 +24,6 @@ export default function ProductDetail() {
       })
       .then((data) => {
         setProducto(data);
-        // Obtener información del vendedor
         return fetch(`http://localhost:3002/usuarios/${data.userId}`);
       })
       .then((res) => res.json())

@@ -16,18 +16,15 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      // Obtenemos todos los usuarios registrados desde el JSON
       const res = await axios.get("http://localhost:3002/usuarios");
       const usuarios = res.data;
 
-      // Buscamos si existe un usuario que coincida
       const usuario = usuarios.find(
         (u) => u.email === email && u.password === password
       );
 
       if (usuario) {
-        login(usuario); // Guardamos el usuario en el contexto
-        // Redirigimos al home
+        login(usuario); 
         navigate("/");
       } else {
         setError("Usuario o contraseña incorrectos");
