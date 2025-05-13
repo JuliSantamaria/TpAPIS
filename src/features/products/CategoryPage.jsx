@@ -8,7 +8,7 @@ export default function CategoryPage() {
   const [filtrados, setFiltrados] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3002/productos") 
+    fetch("http://localhost:3002/productos")  // solicitamos el http
       .then((res) => res.json())
       .then((data) => {
         setProductos(data);
