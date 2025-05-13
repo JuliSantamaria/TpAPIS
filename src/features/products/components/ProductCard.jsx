@@ -1,8 +1,8 @@
-import { useCart } from "../context/CartContext";
-import { useAuth } from "../context/AuthContext";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "../assets/ProductCard.css";
+import { useCart } from "../../cart/context/CartContext";
+import { useAuth } from "../../auth/context/AuthContext";
+import "../../../assets/ProductCard.css";
 
 export default function ProductCard({ product }) {
   const { nombre, descripcion, precio, stock, imagenes, userId } = product;

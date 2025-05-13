@@ -1,8 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../features/auth/context/AuthContext";
 import { useState } from "react";
-import '../assets/Navbar.css';
-import { useCart } from "../context/CartContext.jsx";
+import '../../assets/Navbar.css';
+import { useCart } from "../../features/cart/context/CartContext.jsx";
 import SearchBar from "./SearchBar.jsx";
 
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import ProductCard from "../components/ProductCard";
+import ProductCard from "../features/products/components/ProductCard";
 import "../assets/home.css";
-import Carousel from "../components/Carousel";
+import Carousel from "../shared/components/Carousel";
 import { useSearchParams } from "react-router-dom";
 
 export default function Home() {

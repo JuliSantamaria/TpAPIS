@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../../context/AuthContext.jsx';
-import '../assets/perfil.css';
+import { useAuth } from '../auth/context/AuthContext.jsx';
+import '../../assets/perfil.css';
 
 export default function Profile() {
   const { user } = useAuth();

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../../context/AuthContext";
-import "../assets/GestionProductos.css"; 
+import { useAuth } from "../auth/context/AuthContext";
+import "../../assets/GestionProductos.css";
 
 export default function GestionProductos() {
   const [productos, setProductos] = useState([]);
