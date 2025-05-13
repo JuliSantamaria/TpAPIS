@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useCart } from "../../context/CartContext";
+import { useCart } from "../cart/context/CartContext";
 import { useAuth } from "../auth/context/AuthContext";
 
 export default function ProductDetail() {

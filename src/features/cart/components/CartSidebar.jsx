@@ -1,5 +1,5 @@
 import { useCart } from "../context/CartContext";
-import "../assets/CartSidebar.css";
+import "../../../assets/CartSidebar.css";
 
 export default function CartSidebar({ isOpen, onClose }) {
   const { cartItems, total, removeFromCart } = useCart();
