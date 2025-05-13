@@ -93,6 +93,19 @@
         "bateria_06.jpg"
       ],
       "userId": "31de"
+    },
+        {
+      "id": "1747136773946",
+      "nombre": "Pianola",
+      "descripcion": "-",
+      "descripcionDetallada": "Muy buena",
+      "precio": "12000",
+      "stock": "3",
+      "categoria": "Guitarras",
+      "imagenes": [
+        "pianola_01.jpg"
+      ],
+      "userId": "7744"
     }
   ],
   "usuarios": [
