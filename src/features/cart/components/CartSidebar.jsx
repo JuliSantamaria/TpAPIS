@@ -2,7 +2,7 @@ import { useCart } from "../context/CartContext";
 import "../../../assets/CartSidebar.css";
 
 export default function CartSidebar({ isOpen, onClose }) {
-  const { cartItems, total, removeFromCart } = useCart();
+  const { cartItems, total, removeFromCart, increaseQuantity, decreaseQuantity } = useCart();
 
   return (
     <div className={`cart-sidebar ${isOpen ? "open" : ""}`}>
@@ -19,24 +19,33 @@ export default function CartSidebar({ isOpen, onClose }) {
       ) : (
         <div className="cart-content">
           {cartItems.map((item, index) => (
-            <div key={index} className="cart-item">
-              <img
-                src={`/img/${item.imagenes?.[0] ?? "default.png"}`}
-                alt={item.nombre}
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "/default.png";
-                }}
-                style={{ width: "100px", height: "auto" }}
-              />
-              <div>
-                <h4>{item.nombre}</h4>
-                <p>{item.quantity} x ${Number(item.precio).toFixed(2)
-                }</p>
-                <button onClick={() => removeFromCart(index)}>Eliminar</button>
-              </div>
-            </div>
-          ))}
+  <div key={index} className="cart-item">
+    <img
+      src={`/img/${item.imagenes?.[0] ?? "default.png"}`}
+      alt={item.nombre}
+      onError={(e) => {
+        e.target.onerror = null;
+        e.target.src = "/default.png";
+      }}
+      style={{ width: "100px", height: "auto" }}
+    />
+    <div>
+      <h4>{item.nombre}</h4>
+      <p>${Number(item.precio).toFixed(2)}</p>
+
+      {/* Botones de cantidad */}
+      <div className="quantity-controls" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <button onClick={() => decreaseQuantity(item.id)}>-</button>
+        <span>{item.quantity}</span>
+        <button onClick={() => increaseQuantity(item.id)}>+</button>
+      </div>
+
+      <p>Subtotal: ${(item.precio * item.quantity).toFixed(2)}</p>
+      <button onClick={() => removeFromCart(index)}>Eliminar</button>
+    </div>
+  </div>
+))}
+
           <div className="cart-total">
             <h3>Total: ${total.toFixed(2)}</h3>
           </div>
