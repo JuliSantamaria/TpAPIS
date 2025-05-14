@@ -33,6 +33,35 @@ export function CartProvider({ children }) {
       });
     };
 
+    const increaseQuantity = (productId) => {
+      setCartItems((prev) =>
+        prev.map((item) =>
+          item.id === productId
+            ? {
+                ...item,
+                quantity:
+                  item.quantity + 1 > item.stock
+                    ? item.stock
+                    : item.quantity + 1,
+              }
+            : item
+        )
+      );
+    };
+
+    const decreaseQuantity = (productId) => {
+      setCartItems((prev) =>
+        prev
+          .map((item) =>
+            item.id === productId
+              ? { ...item, quantity: item.quantity - 1 }
+              : item
+          )
+          .filter((item) => item.quantity > 0)
+        );
+      };
+
+
 
     const updateQuantity = (productId, newQuantity) => {
         setCartItems((prev) =>
@@ -52,14 +81,24 @@ export function CartProvider({ children }) {
   
     return (
       <CartContext.Provider
-        value={{
-          cartItems, addToCart, updateQuantity, removeFromCart, clearCart, total,
-          isCartOpen, toggleCart, openCart, closeCart
-        }}
-      >
-        {children}
-      </CartContext.Provider>
-    );
+      value={{
+        cartItems,
+        addToCart,
+        updateQuantity,
+        removeFromCart,
+        clearCart,
+        total,
+        isCartOpen,
+        toggleCart,
+        openCart,
+        closeCart,
+        increaseQuantity,
+        decreaseQuantity, 
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
   }
 
 export function useCart() {
