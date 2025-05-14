@@ -55,7 +55,7 @@
       ]
     },
     {
-      "id": 1745459672938,
+      "id": "1745459672938",
       "userId": 7744,
       "nombre": "Bateria",
       "descripcion": "bateria",
@@ -94,7 +94,7 @@
       ],
       "userId": "31de"
     },
-        {
+    {
       "id": "1747136773946",
       "nombre": "Pianola",
       "descripcion": "-",
@@ -106,6 +106,19 @@
         "pianola_01.jpg"
       ],
       "userId": "7744"
+    },
+    {
+      "id": "1747256414416",
+      "nombre": "Guitarra Fender Squier ",
+      "descripcion": "Guitarra Fender Squier blanca",
+      "descripcionDetallada": "Guitarra Fender Squier Stratocaster color blanca",
+      "precio": "40000",
+      "stock": "4",
+      "categoria": "Guitarras",
+      "imagenes": [
+        "guitarra electrica squier"
+      ],
+      "userId": "1747256193409"
     }
   ],
   "usuarios": [
@@ -124,6 +137,14 @@
       "password": "123456",
       "nombre": "Prueba",
       "apellido": "Muñeco"
+    },
+    {
+      "id": "1747256193409",
+      "username": "Julian",
+      "email": "julisantamaria@uade.edu.ar",
+      "password": "123",
+      "nombre": "Julian",
+      "apellido": "Santamaria"
     }
   ]
 }

@@ -26,36 +26,91 @@
     filter: blur(2px);
     z-index: 0;
   }
-  
 
-  .carousel-content {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
+.slide-guitarras .slide-wrapper .slide-image {
+  width: 66vh;
+  position: relative;
+  left: 80px;
+}
+
+.slide-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 100%;
+}
+
+.slide-image {
+  width: 45%;
+  max-height: 80%;
+  object-fit: contain;
+  z-index: 2;
+}
+
+.slide-text {
+  width: 50%;
+  color: white;
+  z-index: 2;
+  padding: 2rem;
+  text-align: left;
+}
+
+.slide-text .subheading {
+  font-size: 1rem;
+  letter-spacing: 2px;
+  opacity: 0.8;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.slide-text h2 {
+  color: white;
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 0 0 1rem 0;
+}
+
+.slide-text .description {
+  color: white;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.cta-button {
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: #ddd;
+}
+
+/* Responsive (opcional) */
+@media (max-width: 768px) {
+  .slide-wrapper {
+    flex-direction: column;
+    text-align: center;
   }
-  
-  
-  
-  .mySwiper {
-    position: relative;
-    z-index: 1;
-    height: 100%;
-    
+
+  .slide-image,
+  .slide-text {
+    width: 100%;
   }
-  
-  .mySwiper .swiper-slide {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
+
+  .slide-text h2 {
+    font-size: 2rem;
   }
-  
-  .mySwiper img {
-    max-height: 100%;
-    max-width: 100%;
-    object-fit: contain;
+
+  .slide-text .description {
+    font-size: 1rem;
   }
-  
+}
