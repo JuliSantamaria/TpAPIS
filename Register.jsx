@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../assets/Register.css';
+import '../../assets/Register.css';
 
 export default function Register() {
   const [user, setUser] = useState({
@@ -19,16 +19,54 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validación básica
+    if (user.username.trim().length < 3) {
+      alert("El nombre de usuario debe tener al menos 3 caracteres");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(user.email)) {
+      alert("El email no es válido");
+      return;
+    }
+
+    if (user.password.length < 6) {
+      alert("La contraseña debe tener al menos 6 caracteres");
+      return;
+    }
+
+    const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/;
+    if (!soloLetras.test(user.nombre.trim())) {
+      alert("El nombre solo debe contener letras");
+      return;
+    }
+
+    if (!soloLetras.test(user.apellido.trim())) {
+      alert("El apellido solo debe contener letras");
+      return;
+    }
+
     try {
-      // Crear usuario con ID único
+      // Verificar si ya existe un usuario con ese email
+      const res = await axios.get("http://localhost:3002/usuarios");
+      const existe = res.data.some(u => u.email === user.email);
+
+      if (existe) {
+        alert("Ya existe un usuario con este email");
+        return;
+      }
+
       const newUser = {
         ...user,
-        id: Date.now().toString()
+        id: Date.now().toString(),
+        rol: 'user'
       };
-      
+
       await axios.post('http://localhost:3002/usuarios', newUser);
       alert('Usuario registrado correctamente');
-      navigate('/login'); // Redirigir al login después del registro
+      navigate('/login'); 
     } catch (error) {
       console.error("🔥 Error en el registro:", error);
       alert(error.response?.data?.mensaje || "Error al registrar usuario");
@@ -90,4 +128,5 @@ export default function Register() {
         </button>
       </form>
     </div>
-  );}
+  );
+}
