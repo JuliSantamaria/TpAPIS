@@ -18,7 +18,7 @@ export default function Carousel() {
           modules={[Autoplay, Pagination, Navigation]}
           className="mySwiper"
         >
-        {/*   <SwiperSlide>
+          <SwiperSlide>
             <div className="slide-wrapper">
               <img src="/img/pedales.png" alt="Pedales Mooer" className="slide-image" />
               <div className="slide-text">
@@ -32,7 +32,7 @@ export default function Carousel() {
             </div>
         
             </SwiperSlide>
-        */}
+        
           <SwiperSlide className="slide-guitarras">
             <div className="slide-wrapper">
               <img src="/img/guitarras carousel.png" alt="Pedales Mooer" className="slide-image" />
@@ -46,7 +46,7 @@ export default function Carousel() {
               </div>
             </div>
           </SwiperSlide>
-{/*
+
           <SwiperSlide>
             <div className="slide-wrapper">
               <img src="/img/piano carousel.png" alt="Pedales Mooer" className="slide-image" />
@@ -60,7 +60,7 @@ export default function Carousel() {
               </div>
             </div>
           </SwiperSlide>
-*/}
+
         </Swiper>
       </div>
     </div>
