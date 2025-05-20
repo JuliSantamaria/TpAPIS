@@ -101,4 +101,11 @@ button {
     font-weight: bold;
     text-align: right;
   }
-  
+
+  .quantity-controls {
+    margin-left: 33px;
+  }
+
+  .quantity-controls span {
+    color: black;
+  }
