@@ -215,8 +215,6 @@ export default function GestionProductos() {
             value={formData.precio}
             onChange={handleChange}
             required
-            min="1"
-            step="0.01"
           />
           <input
             type="number"
@@ -225,7 +223,6 @@ export default function GestionProductos() {
             value={formData.stock}
             onChange={handleChange}
             required
-            min="1"
           />
           <select
             name="categoria"
