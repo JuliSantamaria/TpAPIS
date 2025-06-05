@@ -3,34 +3,57 @@ import ProductCard from "../features/products/components/ProductCard";
 import "../assets/home.css";
 import Carousel from "../shared/components/Carousel";
 import { useSearchParams } from "react-router-dom";
+import axios from "axios";
+import { API_URLS, handleApiError } from "../config/api";
 
 export default function Home() {
   const [productos, setProductos] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchParams] = useSearchParams();
   const [isSearching, setIsSearching] = useState(false);
+  const [error, setError] = useState(null);
 
+  // Función para cargar todos los productos
+  const fetchAllProductos = async () => {
+    try {
+      const response = await axios.get(API_URLS.PRODUCTOS);
+      const ordenados = response.data.sort((a, b) => a.nombre.localeCompare(b.nombre));
+      setProductos(ordenados);
+      setFilteredProducts(ordenados);
+      setError(null);
+    } catch (err) {
+      console.error("Error al cargar productos:", err);
+      setError(handleApiError(err));
+    }
+  };
+
+  // Función para buscar productos
+  const searchProductos = async (query) => {
+    try {
+      const response = await axios.get(`${API_URLS.PRODUCTOS}/search`, {
+        params: {
+          nombre: query
+        }
+      });
+      setFilteredProducts(response.data);
+      setError(null);
+    } catch (err) {
+      console.error("Error en la búsqueda:", err);
+      setError(handleApiError(err));
+    }
+  };
+
+  // Efecto para cargar productos iniciales
   useEffect(() => {
-    fetch("http://localhost:3002/productos")
-      .then((res) => res.json())
-      .then((data) => {
-        const ordenados = data.sort((a, b) => a.nombre.localeCompare(b.nombre));
-        setProductos(ordenados);
-        setFilteredProducts(ordenados);
-      })
-      .catch((error) => console.error("Error al cargar productos:", error));
+    fetchAllProductos();
   }, []);
 
+  // Efecto para manejar la búsqueda
   useEffect(() => {
     const query = searchParams.get("q");
     if (query) {
       setIsSearching(true);
-      const filtered = productos.filter((product) =>
-        product.nombre.toLowerCase().includes(query.toLowerCase()) ||
-        product.descripcion.toLowerCase().includes(query.toLowerCase()) ||
-        product.categoria.toLowerCase().includes(query.toLowerCase())
-      );
-      setFilteredProducts(filtered);
+      searchProductos(query);
     } else {
       setIsSearching(false);
       setFilteredProducts(productos);
@@ -44,7 +67,11 @@ export default function Home() {
         {isSearching ? "Resultados de búsqueda" : "Catálogo de Productos"}
       </h2>
       
-      {filteredProducts.length > 0 ? (
+      {error ? (
+        <div className="error-message">
+          <p>{error}</p>
+        </div>
+      ) : filteredProducts.length > 0 ? (
         <div className="products-grid">
           {filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />

@@ -11,6 +11,7 @@ export default function Register() {
     nombre: '',
     apellido: '',
   });
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -20,17 +21,12 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const newUser = {
-        ...user,
-        id: Date.now().toString()
-      };
-      
-      await axios.post('http://localhost:3002/usuarios', newUser);
+      await axios.post('http://localhost:8080/api/usuarios/register', user);
       alert('Usuario registrado correctamente');
-      navigate('/login'); 
+      navigate('/login');
     } catch (error) {
       console.error("🔥 Error en el registro:", error);
-      alert(error.response?.data?.mensaje || "Error al registrar usuario");
+      setError(error.response?.data?.error || "Error al registrar usuario");
     }
   };
 

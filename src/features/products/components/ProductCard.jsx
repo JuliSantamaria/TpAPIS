@@ -1,24 +1,37 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import { useCart } from "../../cart/context/CartContext";
 import { useAuth } from "../../auth/context/AuthContext";
 import "../../../assets/ProductCard.css";
 
 export default function ProductCard({ product }) {
-  const { nombre, descripcion, precio, stock, imagenes, userId } = product;
+  const { nombre, descripcion, precio, stock, imagenes, usuario } = product;
   const { addToCart } = useCart();
   const { user } = useAuth();
   const [vendedor, setVendedor] = useState(null);
-  const isOwner = user && user.id === userId;
+  const [error, setError] = useState("");
+  const isOwner = user && usuario && user.id === usuario.id;
 
   useEffect(() => {
-    if (userId) {
-      fetch(`http://localhost:3002/usuarios/${userId}`)
-        .then((res) => res.json())
-        .then((data) => setVendedor(data))
-        .catch((err) => console.error("Error al cargar vendedor:", err));
-    }
-  }, [userId]);
+    const fetchVendedor = async () => {
+      if (usuario && usuario.id) {
+        try {
+          const res = await axios.get(`http://localhost:8080/api/usuarios/${usuario.id}`);
+          setVendedor(res.data);
+        } catch (err) {
+          console.error("Error al cargar vendedor:", err);
+          setError("Error al cargar información del vendedor");
+        }
+      }
+    };
+
+    fetchVendedor();
+  }, [usuario]);
+
+  if (error) {
+    return <div className="error-message">{error}</div>;
+  }
 
   return (
     <div className="product-card">
@@ -29,9 +42,14 @@ export default function ProductCard({ product }) {
       )}
       
       <img
-        src={`/img/${imagenes[0]}`}
+        src={`http://localhost:8080/uploads/${imagenes[0]}`}
         alt={nombre}
         className="product-image"
+        onError={(e) => {
+          console.error('Error loading image:', imagenes[0]);
+          e.target.onerror = null;
+          e.target.src = '/img/placeholder-image.png';
+        }}
       />
       <h3>{nombre}</h3>
       <p className="product-description">{descripcion}</p>
