@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../auth/context/AuthContext.jsx';
+import axios from 'axios';
 import '../../assets/perfil.css';
 
 export default function Profile() {
   const { user } = useAuth();
   const [productos, setProductos] = useState([]);
   const [mostrarProductos, setMostrarProductos] = useState(false);
+  const [error, setError] = useState("");
   const claveExcluida = ['id', 'password'];
 
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const res = await fetch('http://localhost:3002/productos');
-        const data = await res.json();
+        const res = await axios.get('http://localhost:8080/api/productos');
+        const data = res.data;
         const productosDelUsuario = data.filter(
-          producto => String(producto.userId) === String(user?.id)
+          producto => producto.usuario && producto.usuario.id === user?.id
         );
         setProductos(productosDelUsuario);
       } catch (error) {
         console.error("Error al obtener productos:", error);
+        setError("Error al cargar los productos: " + (error.response?.data?.error || error.message));
       }
     };
 

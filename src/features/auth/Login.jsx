@@ -16,7 +16,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const res = await axios.get("http://localhost:3002/usuarios");
+      const res = await axios.get(`http://localhost:8080/api/usuarios`);
       const usuarios = res.data;
 
       const usuario = usuarios.find(
@@ -31,7 +31,7 @@ export default function Login() {
       }
     } catch (err) {
       console.error("🔥 Error al intentar loguear:", err);
-      setError("Ocurrió un error al iniciar sesión");
+      setError("Error al iniciar sesión: " + (err.response?.data?.error || err.message));
     }
   };
 

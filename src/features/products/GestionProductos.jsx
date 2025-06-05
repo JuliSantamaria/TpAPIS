@@ -1,290 +1,371 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../auth/context/AuthContext";
+import axios from "axios";
+import { API_URLS } from "../../config/api";
 import "../../assets/GestionProductos.css";
 
 export default function GestionProductos() {
   const [productos, setProductos] = useState([]);
   const CATEGORIAS = ["Guitarras", "Baterias", "Pianos", "Viento", "Percusion"];
   const [formData, setFormData] = useState({
-    id: "",
     nombre: "",
     descripcion: "",
     descripcionDetallada: "",
     precio: "",
     stock: "",
     categoria: "",
-    imagenes: "",
+    imagenes: [],
   });
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [previewUrls, setPreviewUrls] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const { user } = useAuth();
 
   useEffect(() => {
-    if (!user) return;
+    const fetchProductos = async () => {
+      if (!user) return;
 
-    fetch("http://localhost:3002/productos")
-      .then((res) => res.json())
-      .then((data) => {
-        const misProductos = data.filter((prod) => prod.userId === user.id);
-        setProductos(misProductos);
-      })
-      .catch((err) => console.error("Error al cargar productos:", err));
+      try {
+        const res = await axios.get(API_URLS.PRODUCTOS);
+        const productosDelUsuario = res.data.filter(
+          (prod) => prod.usuario && prod.usuario.id === user.id
+        );
+        setProductos(productosDelUsuario);
+      } catch (err) {
+        console.error("Error al cargar productos:", err);
+        setError(err.response?.data?.error || "Error al cargar los productos");
+      }
+    };
+
+    fetchProductos();
   }, [user]);
+
+  const handleFileSelect = (event) => {
+    const files = [...event.target.files];
+    setSelectedFiles(prev => [...prev, ...files]);
+    
+    // Crear URLs de previsualización para las nuevas imágenes
+    const newPreviewUrls = files.map(file => URL.createObjectURL(file));
+    setPreviewUrls(prev => [...prev, ...newPreviewUrls]);
+  };
+
+  const removeSelectedFile = (index) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    
+    // Liberar URL de previsualización
+    URL.revokeObjectURL(previewUrls[index]);
+    setPreviewUrls(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Limpiar URLs de previsualización al desmontar
+  useEffect(() => {
+    return () => {
+      previewUrls.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, []);
+
+  const uploadImages = async (productoId) => {
+    const uploadedImageNames = [];
+    for (const file of selectedFiles) {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await axios.post(
+          `${API_URLS.PRODUCTOS}/${productoId}/imagenes`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        uploadedImageNames.push(response.data.fileName);
+      } catch (error) {
+        console.error("Error al subir imagen:", error);
+        throw error;
+      }
+    }
+    return uploadedImageNames;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    if (name === "imagenes") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value.split(",").map((img) => img.trim()),
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const validateForm = () => {
-    if (parseFloat(formData.precio) <= 0) {
-      setMessage("El precio debe ser mayor a 0");
+    if (
+      !formData.nombre ||
+      !formData.descripcion ||
+      !formData.precio ||
+      !formData.stock ||
+      !formData.categoria
+    ) {
+      setError("Todos los campos son obligatorios");
       return false;
     }
-    if (parseInt(formData.stock) < 0) {
-      setMessage("El stock no puede ser negativo");
+    if (isNaN(formData.precio) || parseFloat(formData.precio) <= 0) {
+      setError("El precio debe ser un número válido mayor que 0");
       return false;
     }
-    if (formData.nombre.trim().length < 3) {
-      setMessage("El nombre debe tener al menos 3 caracteres");
-      return false;
-    }
-    if (!formData.imagenes) {
-      setMessage("Debe incluir al menos una imagen");
+    if (isNaN(formData.stock) || parseInt(formData.stock) < 0) {
+      setError("El stock debe ser un número válido mayor o igual a 0");
       return false;
     }
     return true;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
 
-    if (!user) {
-      setMessage("Debes iniciar sesión para realizar esta acción");
-      return;
-    }
+    try {
+      const productoData = {
+        ...formData,
+        precio: parseFloat(formData.precio),
+        stock: parseInt(formData.stock),
+        usuario: { id: user.id },
+      };
 
-    if (!validateForm()) {
-      return;
-    }
-
-    const confirmMessage = isEditing
-      ? "¿Estás seguro de que deseas modificar este producto?"
-      : "¿Estás seguro de que deseas agregar este producto?";
-    if (!window.confirm(confirmMessage)) return;
-
-    if (isEditing) {
-      const producto = productos.find((p) => p.id === formData.id);
-      if (producto?.userId !== user.id) {
-        setMessage("No tienes permiso para editar este producto");
-        return;
+      let response;
+      if (isEditing) {
+        response = await axios.put(`${API_URLS.PRODUCTOS}/${formData.id}`, productoData);
+      } else {
+        response = await axios.post(API_URLS.PRODUCTOS, productoData);
+      }      if (selectedFiles.length > 0) {
+        const imageNames = await uploadImages(response.data.id);
+        response.data.imagenes = imageNames;
+        await axios.put(`${API_URLS.PRODUCTOS}/${response.data.id}`, response.data);
       }
 
-      fetch(`http://localhost:3002/productos/${formData.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          imagenes: formData.imagenes.split(","),
-          userId: user.id,
-        }),
-      })
-        .then((res) => res.json())
-        .then((updatedProduct) => {
-          setProductos((prev) =>
-            prev.map((prod) =>
-              prod.id === updatedProduct.id ? updatedProduct : prod
-            )
-          );
-          setIsEditing(false);
-          setFormData({
-            id: "",
-            nombre: "",
-            descripcion: "",
-            descripcionDetallada: "",
-            precio: "",
-            stock: "",
-            categoria: "",
-            imagenes: "",
-          });
-          setMessage("Producto modificado exitosamente.");
-        });
-    } else {
-      fetch("http://localhost:3002/productos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          id: Date.now().toString(),
-          imagenes: formData.imagenes.split(","),
-          userId: user.id,
-        }),
-      })
-        .then((res) => res.json())
-        .then((newProduct) => {
-          setProductos((prev) => [...prev, newProduct]);
-          setFormData({
-            id: "",
-            nombre: "",
-            descripcion: "",
-            descripcionDetallada: "",
-            precio: "",
-            stock: "",
-            categoria: "",
-            imagenes: "",
-          });
-          setMessage("Producto agregado exitosamente.");
-        });
+      setMessage(isEditing ? "Producto actualizado exitosamente" : "Producto creado exitosamente");
+      setFormData({
+        nombre: "",
+        descripcion: "",
+        descripcionDetallada: "",
+        precio: "",
+        stock: "",
+        categoria: "",
+        imagenes: []
+      });
+      
+      // Limpiar las URLs de previsualización
+      previewUrls.forEach(url => URL.revokeObjectURL(url));
+      setPreviewUrls([]);
+      setSelectedFiles([]);
+      setIsEditing(false);
+      
+      // Recargar productos
+      const res = await axios.get(API_URLS.PRODUCTOS);
+      const productosActualizados = res.data.filter(
+        prod => prod.usuario && prod.usuario.id === user.id
+      );
+      setProductos(productosActualizados);
+    } catch (err) {
+      console.error('Error:', err);
+      setError(err.response?.data?.error || 'Error al procesar la operación');
     }
   };
 
-  const handleDelete = (id) => {
-    const producto = productos.find((p) => p.id === id);
-    if (producto?.userId !== user.id) {
-      setMessage("No tienes permiso para eliminar este producto");
+  const handleDelete = async (id) => {
+    if (!window.confirm("¿Estás seguro de que quieres eliminar este producto?")) {
       return;
     }
 
-    if (!window.confirm("¿Estás seguro de que deseas eliminar este producto?")) return;
-
-    fetch(`http://localhost:3002/productos/${id}`, {
-      method: "DELETE",
-    }).then(() => {
-      setProductos((prev) => prev.filter((prod) => prod.id !== id));
-      setMessage("Producto eliminado exitosamente.");
-    });
+    try {
+      await axios.delete(`http://localhost:8080/api/productos/${id}`);
+      setProductos(productos.filter((prod) => prod.id !== id));
+      setMessage("Producto eliminado exitosamente");
+    } catch (err) {
+      console.error("Error al eliminar:", err);
+      setError(err.response?.data?.error || "Error al eliminar el producto");
+    }
   };
 
   const handleEdit = (producto) => {
-    if (producto.userId !== user.id) {
-      setMessage("No tienes permiso para editar este producto");
-      return;
-    }
-
     setFormData({
-      ...producto,
-      imagenes: producto.imagenes.join(","),
+      id: producto.id,
+      nombre: producto.nombre,
+      descripcion: producto.descripcion,
+      descripcionDetallada: producto.descripcionDetallada || "",
+      precio: producto.precio.toString(),
+      stock: producto.stock.toString(),
+      categoria: producto.categoria,
+      imagenes: producto.imagenes || [],
     });
     setIsEditing(true);
   };
 
+  const handleRemoveImage = async (productoId, fileName) => {
+    try {
+      await axios.delete(`${API_URLS.PRODUCTOS}/${productoId}/imagenes/${fileName}`);
+      
+      // Actualizar el estado local
+      setFormData(prev => ({
+        ...prev,
+        imagenes: prev.imagenes.filter(img => img !== fileName)
+      }));
+
+      // Actualizar la lista de productos
+      setProductos(prev =>
+        prev.map(p =>
+          p.id === productoId
+            ? { ...p, imagenes: p.imagenes.filter(img => img !== fileName) }
+            : p
+        )
+      );
+
+      setMessage('Imagen eliminada correctamente');
+    } catch (error) {
+      console.error('Error al eliminar la imagen:', error);
+      setError('Error al eliminar la imagen');
+    }
+  };
+
   if (!user) {
-    return (
-      <div className="no-user">
-        <h1>Gestión de Productos</h1>
-        <p>Debes iniciar sesión para gestionar tus productos.</p>
-      </div>
-    );
+    return <p>Debe iniciar sesión para gestionar productos</p>;
   }
 
   return (
-    <div className="gestion-productos">
-      <h1>Gestión de Productos</h1>
-      {message && <div className="message">{message}</div>}
+    <div className="gestion-container">
+      <h2>{isEditing ? "Editar Producto" : "Crear Nuevo Producto"}</h2>
 
-      <form onSubmit={handleSubmit}>
-        <h2>{isEditing ? "Editar Producto" : "Crear Producto"}</h2>
-        <div className="formulario">
+      {message && <div className="success-message">{message}</div>}
+      {error && <div className="error-message">{error}</div>}
+
+      <form onSubmit={handleSubmit} className="producto-form">
+        <input
+          type="text"
+          name="nombre"
+          placeholder="Nombre del producto"
+          value={formData.nombre}
+          onChange={handleChange}
+        />
+
+        <textarea
+          name="descripcion"
+          placeholder="Descripción corta"
+          value={formData.descripcion}
+          onChange={handleChange}
+        />
+
+        <textarea
+          name="descripcionDetallada"
+          placeholder="Descripción detallada"
+          value={formData.descripcionDetallada}
+          onChange={handleChange}
+        />
+
+        <input
+          type="number"
+          name="precio"
+          placeholder="Precio"
+          value={formData.precio}
+          onChange={handleChange}
+        />
+
+        <input
+          type="number"
+          name="stock"
+          placeholder="Stock"
+          value={formData.stock}
+          onChange={handleChange}
+        />
+
+        <select
+          name="categoria"
+          value={formData.categoria}
+          onChange={handleChange}
+        >
+          <option value="">Selecciona una categoría</option>
+          {CATEGORIAS.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+
+        <div className="file-upload-container">
           <input
-            type="text"
-            name="nombre"
-            placeholder="Nombre"
-            value={formData.nombre}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="descripcion"
-            placeholder="Descripción"
-            value={formData.descripcion}
-            onChange={handleChange}
-            required
-          />
-          <textarea
-            name="descripcionDetallada"
-            placeholder="Descripción Detallada"
-            value={formData.descripcionDetallada}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="number"
-            name="precio"
-            placeholder="Precio"
-            value={formData.precio}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="number"
-            name="stock"
-            placeholder="Stock"
-            value={formData.stock}
-            onChange={handleChange}
-            required
-          />
-          <select
-            name="categoria"
-            value={formData.categoria}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Seleccionar categoría</option>
-            {CATEGORIAS.map((categoria, index) => (
-              <option key={index} value={categoria}>
-                {categoria}
-              </option>
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleFileSelect}
+            className="file-input"
+          />          <div className="selected-files">
+            {previewUrls.map((url, index) => (
+              <div key={index} className="selected-file-preview">
+                <img 
+                  src={url} 
+                  alt={`Preview ${index + 1}`} 
+                  className="image-preview"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeSelectedFile(index)}
+                  className="remove-image"
+                >
+                  ×
+                </button>
+                <span className="file-name">{selectedFiles[index].name}</span>
+              </div>
             ))}
-          </select>
-          <input
-            type="text"
-            name="imagenes"
-            placeholder="Imágenes (separadas por comas)"
-            value={formData.imagenes}
-            onChange={handleChange}
-            required
-          />
-          <button type="submit">{isEditing ? "Actualizar" : "Crear"}</button>
+          </div>
         </div>
+
+        {isEditing && formData.imagenes && formData.imagenes.length > 0 && (
+          <div className="current-images">
+            <h4>Imágenes actuales:</h4>
+            <div className="images-grid">
+              {formData.imagenes.map((img, index) => (
+                <div key={index} className="image-container">
+                  <img src={`/img/${img}`} alt={`Producto ${index + 1}`} />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(formData.id, img)}
+                    className="remove-image"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <button type="submit">
+          {isEditing ? "Actualizar Producto" : "Crear Producto"}
+        </button>
       </form>
 
-      <h2>Mis Productos</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Precio</th>
-            <th>Stock</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {productos.map((producto) => (
-            <tr key={producto.id}>
-              <td>{producto.id}</td>
-              <td>{producto.nombre}</td>
-              <td>${producto.precio}</td>
-              <td>{producto.stock}</td>
-              <td className="action-buttons">
-                <button 
-                  onClick={() => handleEdit(producto)}
-                  className="edit-button"
-                >
-                  Editar
-                </button>
-                <button 
-                  onClick={() => handleDelete(producto.id)}
-                  className="delete-button"
-                >
-                  Eliminar
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="productos-list">
+        <h3>Mis Productos</h3>
+        {productos.map((producto) => (
+          <div key={producto.id} className="producto-item">
+            <h4>{producto.nombre}</h4>
+            <p>{producto.descripcion}</p>
+            <p>Precio: ${producto.precio}</p>
+            <p>Stock: {producto.stock}</p>
+            <div className="button-group">
+              <button onClick={() => handleEdit(producto)}>Editar</button>
+              <button onClick={() => handleDelete(producto.id)}>Eliminar</button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

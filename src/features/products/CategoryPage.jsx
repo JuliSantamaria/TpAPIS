@@ -1,24 +1,35 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import axios from "axios";
 import ProductCard from "./components/ProductCard";
 
 export default function CategoryPage() {
-  const { nombre } = useParams(); 
+  const { nombre } = useParams();
   const [productos, setProductos] = useState([]);
-  const [filtrados, setFiltrados] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3002/productos")  // solicitamos el http
-      .then((res) => res.json())
-      .then((data) => {
-        setProductos(data);
-        const filtradosPorCategoria = data.filter(
-          (prod) => prod.categoria.toLowerCase() === nombre.toLowerCase()
+    const fetchProductos = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/productos/categoria/${nombre}`
         );
-        setFiltrados(filtradosPorCategoria);
-      })
-      .catch((err) => console.error("Error al cargar productos:", err));
+        setProductos(res.data);
+      } catch (err) {
+        console.error("Error al cargar productos:", err);
+        setError(
+          "Error al cargar productos: " +
+            (err.response?.data?.error || err.message)
+        );
+      }
+    };
+
+    fetchProductos();
   }, [nombre]);
+
+  if (error) {
+    return <div className="text-center text-red-600">{error}</div>;
+  }
 
   return (
     <div className="container">
@@ -26,11 +37,11 @@ export default function CategoryPage() {
         Categoría: {nombre}
       </h2>
 
-      {filtrados.length === 0 ? (
+      {productos.length === 0 ? (
         <p className="text-center">No hay productos en esta categoría.</p>
       ) : (
         <div className="grid md:grid-cols-3 gap-6">
-          {filtrados.map((producto) => (
+          {productos.map((producto) => (
             <ProductCard key={producto.id} product={producto} />
           ))}
         </div>
