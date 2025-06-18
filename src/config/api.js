@@ -12,7 +12,7 @@ export const API_URLS = {
     USUARIOS: `${API_BASE_URL}/usuarios`,
     USUARIO_BY_ID: (id) => `${API_BASE_URL}/usuarios/${id}`,
     USUARIO_BY_USERNAME: (username) => `${API_BASE_URL}/usuarios/username/${username}`,
-    REGISTER: `${API_BASE_URL}/usuarios/register`,
+    REGISTER: 'http://localhost:8080/auth/register',
     UPDATE_PASSWORD: (id) => `${API_BASE_URL}/usuarios/${id}/password`,
 };
 

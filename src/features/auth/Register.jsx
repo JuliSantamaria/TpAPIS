@@ -21,7 +21,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8080/api/usuarios/register', user);
+      await axios.post('http://localhost:8080/auth/register', user);
       alert('Usuario registrado correctamente');
       navigate('/login');
     } catch (error) {
