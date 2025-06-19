@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../auth/context/AuthContext";
-import axios from "axios";
+import axios from "../auth/axiosInstance";
 import { API_URLS } from "../../config/api";
 import "../../assets/GestionProductos.css";
 
@@ -137,7 +137,6 @@ export default function GestionProductos() {
         ...formData,
         precio: parseFloat(formData.precio),
         stock: parseInt(formData.stock),
-        usuario: { id: user.id },
       };
 
       let response;

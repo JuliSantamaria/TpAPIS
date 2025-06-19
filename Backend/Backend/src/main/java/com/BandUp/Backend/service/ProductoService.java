@@ -4,16 +4,21 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import com.BandUp.Backend.exception.ResourceNotFoundException;
 import com.BandUp.Backend.model.Producto;
+import com.BandUp.Backend.model.Usuario;
 import com.BandUp.Backend.repository.ProductoRepository;
+import com.BandUp.Backend.repository.UsuarioRepository;
+
 import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
 public class ProductoService {
     private final ProductoRepository productoRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public ProductoService(ProductoRepository productoRepository) {
+    public ProductoService(ProductoRepository productoRepository, UsuarioRepository usuarioRepository) {
         this.productoRepository = productoRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     public List<Producto> getAllProductos() {
@@ -55,13 +60,18 @@ public class ProductoService {
         return productoRepository.findByPrecioRange(minPrecio, maxPrecio);
     }
 
-    public Producto createProducto(Producto producto) {
-        validarProducto(producto);
-        if (productoRepository.existsByNombre(producto.getNombre())) {
-            throw new IllegalArgumentException("Ya existe un producto con ese nombre");
-        }
-        return productoRepository.save(producto);
+    public Producto createProducto(Producto producto, String username) {
+    validarProducto(producto);
+    if (productoRepository.existsByNombre(producto.getNombre())) {
+        throw new IllegalArgumentException("Ya existe un producto con ese nombre");
     }
+
+    Usuario usuario = usuarioRepository.findByUsername(username)
+        .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+    producto.setUsuario(usuario);
+    return productoRepository.save(producto);
+}
 
     public Producto updateProducto(Long id, Producto productoDetails) {
         Producto producto = getProductoById(id);

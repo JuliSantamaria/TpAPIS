@@ -1,5 +1,6 @@
 package com.BandUp.Backend.controller;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,9 +83,9 @@ public class ProductoController {
     }
 
     @PostMapping
-    public ResponseEntity<Producto> createProducto(@RequestBody Producto producto) {
+    public ResponseEntity<Producto> createProducto(@RequestBody Producto producto, Principal principal) {
         try {
-            Producto nuevoProducto = productoService.createProducto(producto);
+            Producto nuevoProducto = productoService.createProducto(producto, principal.getName());
             return new ResponseEntity<>(nuevoProducto, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
