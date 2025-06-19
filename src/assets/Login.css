@@ -60,6 +60,7 @@
   font-size: 1.1rem;
   line-height: 50px;
   transition: all 0.3s ease;
+  margin-bottom: 1.1rem; /* <-- Agrega este margen inferior */
 }
 
 /* Asegurar que todos los tipos de input sean idénticos */

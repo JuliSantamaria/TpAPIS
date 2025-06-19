@@ -21,11 +21,17 @@ export default function CartSidebar({ isOpen, onClose }) {
           {cartItems.map((item, index) => (
   <div key={index} className="cart-item">
     <img
-      src={`/img/${item.imagenes?.[0] ?? "default.png"}`}
+      src={
+        item.imagenes && item.imagenes.length > 0
+          ? (item.imagenes[0].startsWith('http')
+              ? item.imagenes[0]
+              : `http://localhost:8080/uploads/${item.imagenes[0]}`)
+          : '/img/placeholder-image.png'
+      }
       alt={item.nombre}
       onError={(e) => {
         e.target.onerror = null;
-        e.target.src = "/default.png";
+        e.target.src = '/img/placeholder-image.png';
       }}
       style={{ width: "100px", height: "auto" }}
     />
