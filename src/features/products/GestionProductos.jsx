@@ -235,116 +235,124 @@ export default function GestionProductos() {
   }
 
   return (
-    <div className="gestion-container">
-      <h2>{isEditing ? "Editar Producto" : "Crear Nuevo Producto"}</h2>
+      <div className="gestion-container">
+        <h2>{isEditing ? "Editar Producto" : "Crear Nuevo Producto"}</h2>
 
-      {message && <div className="success-message">{message}</div>}
-      {error && <div className="error-message">{error}</div>}
+        {message && <div className="success-message">{message}</div>}
+        {error && <div className="error-message">{error}</div>}
 
-      <form onSubmit={handleSubmit} className="producto-form">
-        <input
-          type="text"
-          name="nombre"
-          placeholder="Nombre del producto"
-          value={formData.nombre}
-          onChange={handleChange}
-        />
-
-        <textarea
-          name="descripcion"
-          placeholder="Descripción corta"
-          value={formData.descripcion}
-          onChange={handleChange}
-        />
-
-        <textarea
-          name="descripcionDetallada"
-          placeholder="Descripción detallada"
-          value={formData.descripcionDetallada}
-          onChange={handleChange}
-        />
-
-        <input
-          type="number"
-          name="precio"
-          placeholder="Precio"
-          value={formData.precio}
-          onChange={handleChange}
-        />
-
-        <input
-          type="number"
-          name="stock"
-          placeholder="Stock"
-          value={formData.stock}
-          onChange={handleChange}
-        />
-
-        <select
-          name="categoria"
-          value={formData.categoria}
-          onChange={handleChange}
-        >
-          <option value="">Selecciona una categoría</option>
-          {CATEGORIAS.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
-
-        <div className="file-upload-container">
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleFileSelect}
-            className="file-input"
-          />          <div className="selected-files">
-            {previewUrls.map((url, index) => (
-              <div key={index} className="selected-file-preview">
-                <img 
-                  src={url} 
-                  alt={`Preview ${index + 1}`} 
-                  className="image-preview"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeSelectedFile(index)}
-                  className="remove-image"
-                >
-                  ×
-                </button>
-                <span className="file-name">{selectedFiles[index].name}</span>
-              </div>
-            ))}
+        
+  <form onSubmit={handleSubmit} className="formulario">
+    <div className="form-group">
+      <input
+        type="text"
+        name="nombre"
+        placeholder="Nombre del producto"
+        value={formData.nombre}
+        onChange={handleChange}
+      />
+    </div>
+    <div className="form-group">
+      <textarea
+        name="descripcion"
+        placeholder="Descripción corta"
+        value={formData.descripcion}
+        onChange={handleChange}
+        rows={2}
+      />
+    </div>
+    <div className="form-group">
+      <textarea
+        name="descripcionDetallada"
+        placeholder="Descripción detallada"
+        value={formData.descripcionDetallada}
+        onChange={handleChange}
+        rows={2}
+      />
+    </div>
+    <div className="form-group">
+      <input
+        type="number"
+        name="precio"
+        placeholder="Precio"
+        value={formData.precio}
+        onChange={handleChange}
+      />
+    </div>
+    <div className="form-group">
+      <input
+        type="number"
+        name="stock"
+        placeholder="Stock"
+        value={formData.stock}
+        onChange={handleChange}
+      />
+    </div>
+    <div className="form-group">
+      <select
+        name="categoria"
+        value={formData.categoria}
+        onChange={handleChange}
+      >
+        <option value="">Selecciona una categoría</option>
+        {CATEGORIAS.map((cat) => (
+          <option key={cat} value={cat}>
+            {cat}
+          </option>
+        ))}
+      </select>
+    </div>
+    <div className="form-group file-upload-container">
+      <input
+        type="file"
+        multiple
+        accept="image/*"
+        onChange={handleFileSelect}
+        className="file-input"
+      />
+      <div className="selected-files">
+        {previewUrls.map((url, index) => (
+          <div key={index} className="selected-file-preview">
+            <img 
+              src={url} 
+              alt={`Preview ${index + 1}`} 
+              className="image-preview"
+            />
+            <button
+              type="button"
+              onClick={() => removeSelectedFile(index)}
+              className="remove-image"
+            >
+              ×
+            </button>
+            <span className="file-name">{selectedFiles[index].name}</span>
           </div>
-        </div>
-
-        {isEditing && formData.imagenes && formData.imagenes.length > 0 && (
-          <div className="current-images">
-            <h4>Imágenes actuales:</h4>
-            <div className="images-grid">
-              {formData.imagenes.map((img, index) => (
-                <div key={index} className="image-container">
-                  <img src={`/img/${img}`} alt={`Producto ${index + 1}`} />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveImage(formData.id, img)}
-                    className="remove-image"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
+        ))}
+      </div>
+    </div>
+    {isEditing && formData.imagenes && formData.imagenes.length > 0 && (
+      <div className="current-images">
+        <h4>Imágenes actuales:</h4>
+        <div className="images-grid">
+          {formData.imagenes.map((img, index) => (
+            <div key={index} className="image-container">
+              <img src={`/img/${img}`} alt={`Producto ${index + 1}`} />
+              <button
+                type="button"
+                onClick={() => handleRemoveImage(formData.id, img)}
+                className="remove-image"
+              >
+                ×
+              </button>
             </div>
-          </div>
-        )}
-
-        <button type="submit">
-          {isEditing ? "Actualizar Producto" : "Crear Producto"}
-        </button>
-      </form>
+          ))}
+        </div>
+      </div>
+    )}
+    <button type="submit" className="submit-button">
+      {isEditing ? "Actualizar Producto" : "Crear Producto"}
+    </button>
+  </form>
 
       <div className="productos-list">
         <h3>Mis Productos</h3>
