@@ -101,7 +101,6 @@ export default function GestionProductos() {
       }));
     }
   };
-
   const validateForm = () => {
     if (
       !formData.nombre ||
@@ -119,6 +118,12 @@ export default function GestionProductos() {
     }
     if (isNaN(formData.stock) || parseInt(formData.stock) < 0) {
       setError("El stock debe ser un número válido mayor o igual a 0");
+      return false;
+    }
+    // Validar que haya al menos una imagen (nueva o existente)
+    const totalImagenes = (formData.imagenes ? formData.imagenes.length : 0) + selectedFiles.length;
+    if (totalImagenes === 0) {
+      setError("Debe haber al menos una imagen para el producto");
       return false;
     }
     return true;
