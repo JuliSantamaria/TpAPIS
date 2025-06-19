@@ -7,7 +7,6 @@ button {
   margin-right: 5px;
 }
 
-
 table {
   width: 100%;
   border-collapse: collapse;
@@ -29,7 +28,6 @@ th, td {
   background-color: #dc3545;
 }
 
-
 input:focus,
 textarea:focus,
 select:focus {
@@ -43,15 +41,16 @@ select:focus {
   color: black;
 }
 
+/* FORMULARIO ORDENADO EN 3 COLUMNAS */
 .formulario {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr)); 
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px 20px;
   background-color: white;
   padding: 30px;
   border-radius: 8px;
   border: 2px solid #dc3545;
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto 30px;
   box-shadow: 0 0 15px rgba(220, 53, 69, 0.2);
 }
@@ -65,10 +64,15 @@ select:focus {
   font-size: 24px;
   font-weight: bold;
   text-transform: uppercase;
-
   padding-bottom: 15px;
 }
 
+/* Cada grupo de input ocupa una celda */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
 
 /* Labels */
 .form-group label {
@@ -79,7 +83,7 @@ select:focus {
   font-size: 14px;
 }
 
-/* Todos los inputs, selects y textareas */
+/* Inputs, selects y textareas */
 .formulario input,
 .formulario select,
 .formulario textarea {
@@ -94,27 +98,30 @@ select:focus {
   font-size: 14px;
 }
 
-/* Específicamente para los textareas */
+/* Textarea ocupa toda la fila */
 .formulario textarea {
-  grid-column: 1 / -1; 
-  width: 100%;
-  min-height: 100px;
+  grid-column: 1 / -1;
+  min-height: 80px;
   height: auto;
   resize: vertical;
 }
 
-/* Para el contenedor del archivo */
+/* Stock y categoría en la segunda fila */
+.formulario .form-group:nth-child(5) { /* Stock */
+  grid-column: 1 / 2;
+}
+.formulario .form-group:nth-child(6) { /* Categoría */
+  grid-column: 2 / 3;
+}
+
+/* Input de archivos ocupa la tercera columna de la segunda fila */
 .file-upload-container {
-  grid-column: 1 / -1;
-  width: 100%;
+  grid-column: 3 / 4;
+  align-self: end;
+  margin-top: 0;
 }
 
-.file-input {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* Botón submit */
+/* Botón submit ocupa toda la fila */
 .submit-button {
   grid-column: 1 / -1;
   justify-self: center;
@@ -128,12 +135,13 @@ select:focus {
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  margin-top: 30px;
 }
 
 /* Asegurarse de que los selects tengan el mismo ancho */
 .formulario select {
   width: 100%;
-  padding-right: 30px; 
+  padding-right: 30px;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -159,8 +167,8 @@ input[type="number"]::-webkit-outer-spin-button {
 .formulario select:focus,
 .formulario textarea:focus {
   outline: none;
-  border-color: #dc3545;
-  box-shadow: 0 0 5px rgba(220, 53, 69, 0.3);
+  border-color: #ff8000;
+  box-shadow: 0 0 8px rgba(220, 53, 69, 0.18);
 }
 
 /* Tabla de productos */
@@ -184,7 +192,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .productos-table th {
   background-color: #dc3545;
-  color: white; 
+  color: white;
   font-weight: bold;
 }
 
@@ -239,6 +247,119 @@ input[type="number"]::-webkit-outer-spin-button {
   color: #721c24;
   border-color: #f5c6cb;
 }
+/* ...código existente... */
+
+
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  background: transparent; /* Sin fondo blanco */
+  border: 2px solid #dc3545;
+  border-radius: 12px;
+  max-width: 600px;
+  margin: 0 auto 30px;
+  padding: 32px 28px 28px 28px;
+  box-shadow: none; /* Sin sombra */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.formulario input,
+.formulario select,
+.formulario textarea {
+  width: 100%;
+  min-height: 42px;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 2px solid #dc3545;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.92); /* Fondo blanco semitransparente */
+  color: #222;
+  font-size: 15px;
+  margin-top: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07); /* Sombra suave */
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.formulario textarea {
+  min-height: 80px;
+  max-height: 180px;
+  resize: vertical;
+}
+
+.file-upload-container {
+  width: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.file-input {
+  width: 100%;
+  padding: 12px;
+  background-color: transparent;
+  border: 1.5px solid #dc3545;
+  border-radius: 4px;
+  color: black;
+  cursor: pointer;
+}
+
+.file-input::-webkit-file-upload-button {
+  background-color: #dc3545;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.file-input::-webkit-file-upload-button:hover {
+  background-color: #c82333;
+}
+
+.submit-button {
+  width: 220px;
+  align-self: center;
+  height: 44px;
+  padding: 0 30px;
+  background-color: #dc3545;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 18px;
+  font-size: 17px;
+}
+
+@media (max-width: 700px) {
+  .formulario {
+    padding: 18px 6px;
+    max-width: 98vw;
+  }
+}
+
+
+
+/* ...resto del código existente... */
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1.5px solid #28a745;
+  border-radius: 4px 4px 0 0;
+  padding: 8px 0;
+  margin: 0 0 20px 0;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+}
 
 /* Previsualización de imágenes */
 .selected-files {
@@ -289,14 +410,15 @@ input[type="number"]::-webkit-outer-spin-button {
 .file-name {
   margin-top: 8px;
   font-size: 12px;
-  color: black; /* Nombre de archivo en negro */
+  color: black;
   text-align: center;
 }
 
 /* Input de archivo */
 .file-upload-container {
-  grid-column: 1 / -1;
-  margin-top: 20px;
+  grid-column: 3 / 4;
+  align-self: end;
+  margin-top: 0;
 }
 
 .file-input {
@@ -305,7 +427,7 @@ input[type="number"]::-webkit-outer-spin-button {
   background-color: white;
   border: 1px solid #dc3545;
   border-radius: 4px;
-  color: black; 
+  color: black;
   cursor: pointer;
 }
 
