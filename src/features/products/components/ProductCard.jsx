@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import axios from "../../auth/axiosInstance";
 import { useCart } from "../../cart/context/CartContext";
 import { useAuth } from "../../auth/context/AuthContext";
 import "../../../assets/ProductCard.css";
@@ -17,7 +17,7 @@ export default function ProductCard({ product }) {
     const fetchVendedor = async () => {
       if (usuario && usuario.id) {
         try {
-          const res = await axios.get(`http://localhost:8080/api/usuarios/${usuario.id}`);
+          const res = await axios.get(`/api/usuarios/${usuario.id}`);
           setVendedor(res.data);
         } catch (err) {
           console.error("Error al cargar vendedor:", err);
@@ -40,13 +40,12 @@ export default function ProductCard({ product }) {
           Mi Producto
         </div>
       )}
-      
-      <img
-        src={`http://localhost:8080/uploads/${imagenes[0]}`}
+        <img
+        src={imagenes && imagenes.length > 0 ? imagenes[0] : '/img/placeholder-image.png'}
         alt={nombre}
         className="product-image"
         onError={(e) => {
-          console.error('Error loading image:', imagenes[0]);
+          console.error('Error loading image:', imagenes?.[0]);
           e.target.onerror = null;
           e.target.src = '/img/placeholder-image.png';
         }}

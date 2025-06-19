@@ -131,6 +131,17 @@ public class ProductoService {
         return productoRepository.save(producto);
     }
 
+    public List<Producto> getProductosByUsuario(String username) {
+        Usuario usuario = usuarioRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+        
+        List<Producto> productos = productoRepository.findAll().stream()
+                .filter(p -> p.getUsuario() != null && p.getUsuario().getId().equals(usuario.getId()))
+                .toList();
+                
+        return productos;
+    }
+
     private void validarProducto(Producto producto) {
         if (producto.getNombre() == null || producto.getNombre().trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre del producto es requerido");

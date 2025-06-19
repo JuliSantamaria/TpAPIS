@@ -4,12 +4,14 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.BandUp.Backend.exception.ResourceNotFoundException;
 import com.BandUp.Backend.model.Producto;
@@ -27,12 +29,11 @@ public class ProductoController {
     public ProductoController(ProductoService productoService, FileStorageService fileStorageService) {
         this.productoService = productoService;
         this.fileStorageService = fileStorageService;
-    }
-
-    @GetMapping
+    }    @GetMapping
     public ResponseEntity<List<Producto>> getAllProductos() {
         try {
             List<Producto> productos = productoService.getAllProductos();
+            productos.forEach(this::setFullImageUrls);
             return ResponseEntity.ok(productos);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al obtener productos", e);
@@ -175,6 +176,27 @@ public class ProductoController {
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar la imagen", e);
+        }
+    }
+
+    @GetMapping("/mis-productos")
+    public ResponseEntity<List<Producto>> getMisProductos(Principal principal) {
+        try {
+            List<Producto> productos = productoService.getProductosByUsuario(principal.getName());
+            return ResponseEntity.ok(productos);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al obtener los productos", e);
+        }
+    }    private String buildImageUrl(String fileName) {
+        return "http://localhost:8080/uploads/" + fileName;
+    }
+
+    private void setFullImageUrls(Producto producto) {
+        if (producto.getImagenes() != null) {
+            List<String> fullUrls = producto.getImagenes().stream()
+                    .map(this::buildImageUrl)
+                    .collect(Collectors.toList());
+            producto.setImagenes(fullUrls);
         }
     }
 }

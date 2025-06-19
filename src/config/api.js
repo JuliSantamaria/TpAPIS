@@ -2,7 +2,8 @@ const API_BASE_URL = 'http://localhost:8080/api';
 
 export const API_URLS = {
     // Productos
-    PRODUCTOS: `${API_BASE_URL}/productos`,    PRODUCTO_BY_ID: (id) => `${API_BASE_URL}/productos/${id}`,
+    PRODUCTOS: `${API_BASE_URL}/productos`,
+    MIS_PRODUCTOS: `${API_BASE_URL}/productos/mis-productos`,PRODUCTO_BY_ID: (id) => `${API_BASE_URL}/productos/${id}`,
     PRODUCTOS_BY_CATEGORIA: (categoria) => `${API_BASE_URL}/productos/categoria/${categoria}`,
     PRODUCTO_STOCK: (id) => `${API_BASE_URL}/productos/${id}/stock`,
     PRODUCTO_IMAGENES: (id) => `${API_BASE_URL}/productos/${id}/imagenes`,

@@ -22,17 +22,13 @@ export default function GestionProductos() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const { user } = useAuth();
-
   useEffect(() => {
     const fetchProductos = async () => {
       if (!user) return;
 
       try {
-        const res = await axios.get(API_URLS.PRODUCTOS);
-        const productosDelUsuario = res.data.filter(
-          (prod) => prod.usuario && prod.usuario.id === user.id
-        );
-        setProductos(productosDelUsuario);
+        const response = await axios.get(API_URLS.MIS_PRODUCTOS);
+        setProductos(response.data);
       } catch (err) {
         console.error("Error al cargar productos:", err);
         setError(err.response?.data?.error || "Error al cargar los productos");
