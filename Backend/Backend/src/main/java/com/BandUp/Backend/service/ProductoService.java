@@ -22,8 +22,18 @@ public class ProductoService {
     }
 
     public List<Producto> getAllProductos() {
-        return productoRepository.findAll();
+    List<Producto> productos = productoRepository.findAll();
+
+        // Forzar carga de usuario (evita que quede null al serializar)
+        productos.forEach(p -> {
+            if (p.getUsuario() != null) {
+                p.getUsuario().getId(); // o p.setUsuario(p.getUsuario()) para forzar carga
+            }
+        });
+
+        return productos;
     }
+
 
     public Producto getProductoById(Long id) {
         if (id == 0) {

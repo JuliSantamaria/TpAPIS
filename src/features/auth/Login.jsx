@@ -22,6 +22,8 @@ export default function Login() {
     password
   });
 
+  console.log("Respuesta completa del login:", res.data); 
+
     const token = res.data.token;
     localStorage.setItem("token", token); // ✅ Guardar token JWT en localStorage
 
