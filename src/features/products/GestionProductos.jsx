@@ -236,13 +236,17 @@ export default function GestionProductos() {
 
   return (
       <div className="gestion-container">
-        <h2>{isEditing ? "Editar Producto" : "Crear Nuevo Producto"}</h2>
-
-        {message && <div className="success-message">{message}</div>}
-        {error && <div className="error-message">{error}</div>}
-
-        
-  <form onSubmit={handleSubmit} className="formulario">
+        <form onSubmit={handleSubmit} className="formulario">
+          <h2 style={{
+            textAlign: "center",
+            margin: "0 0 18px 0",
+            fontWeight: "bold",
+            fontSize: "2rem"
+          }}>
+            {isEditing ? "Editar Producto" : "Crear Nuevo Producto"}
+          </h2>
+          {message && <div className="success-message">{message}</div>}
+          {error && <div className="error-message">{error}</div>}
     <div className="form-group">
       <input
         type="text"
