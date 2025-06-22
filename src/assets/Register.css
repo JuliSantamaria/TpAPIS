@@ -12,6 +12,12 @@
   box-sizing: border-box;
 }
 
+/* Puedes agregar esto a tu Register.css */
+.swal2-border-radius {
+  border-radius: 18px !important;
+}
+
+
 .register-title {
   font-size: 1.8rem;
   color: black;

@@ -3,6 +3,10 @@ import { useAuth } from "../auth/context/AuthContext";
 import axios from "../auth/axiosInstance";
 import { API_URLS } from "../../config/api";
 import "../../assets/GestionProductos.css";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
 
 export default function GestionProductos() {
   const [productos, setProductos] = useState([]);
@@ -35,7 +39,84 @@ export default function GestionProductos() {
       }
     };
 
-    fetchProductos();
+    fetchProductos();const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validateForm()) {
+    await MySwal.fire({
+      icon: 'error',
+      title: 'Campos obligatorios incompletos',
+      text: error || 'Por favor, completa todos los campos requeridos y sube al menos una imagen.',
+      confirmButtonColor: '#dc3545',
+      confirmButtonText: 'Ok',
+      customClass: { popup: 'swal2-border-radius' }
+    });
+    return;
+  }
+
+  try {
+    const productoData = {
+      ...formData,
+      precio: parseFloat(formData.precio),
+      stock: parseInt(formData.stock),
+    };
+
+    let response;
+    if (isEditing) {
+      response = await axios.put(`${API_URLS.PRODUCTOS}/${formData.id}`, productoData);
+    } else {
+      response = await axios.post(API_URLS.PRODUCTOS, productoData);
+    }
+    if (selectedFiles.length > 0) {
+      const imageNames = await uploadImages(response.data.id);
+      response.data.imagenes = imageNames;
+      await axios.put(`${API_URLS.PRODUCTOS}/${response.data.id}`, response.data);
+    }
+
+    await MySwal.fire({
+      icon: 'success',
+      title: isEditing ? 'Producto actualizado' : 'Producto creado',
+      text: isEditing ? 'El producto fue actualizado correctamente.' : 'El producto fue creado exitosamente.',
+      confirmButtonColor: '#28a745',
+      confirmButtonText: 'Ok',
+      customClass: { popup: 'swal2-border-radius' }
+    });
+
+    setFormData({
+      nombre: "",
+      descripcion: "",
+      descripcionDetallada: "",
+      precio: "",
+      stock: "",
+      categoria: "",
+      imagenes: []
+    });
+
+    previewUrls.forEach(url => URL.revokeObjectURL(url));
+    setPreviewUrls([]);
+    setSelectedFiles([]);
+    setIsEditing(false);
+
+    // Recargar productos
+    const res = await axios.get(API_URLS.PRODUCTOS);
+    const productosActualizados = res.data.filter(
+      prod => prod.usuario && prod.usuario.id === user.id
+    );
+    setProductos(productosActualizados);
+    setMessage("");
+    setError("");
+  } catch (err) {
+    console.error('Error:', err);
+    await MySwal.fire({
+      icon: 'error',
+      title: 'Error al guardar',
+      text: err.response?.data?.error || 'Error al procesar la operación',
+      confirmButtonColor: '#dc3545',
+      confirmButtonText: 'Ok',
+      customClass: { popup: 'swal2-border-radius' }
+    });
+    setError(err.response?.data?.error || 'Error al procesar la operación');
+  }
+};
   }, [user]);
 
   const handleFileSelect = (event) => {
@@ -130,55 +211,83 @@ export default function GestionProductos() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+  e.preventDefault();
+  if (!validateForm()) {
+    await MySwal.fire({
+      icon: 'error',
+      title: 'Campos obligatorios incompletos',
+      text: error || 'Por favor, completa todos los campos requeridos y sube al menos una imagen.',
+      confirmButtonColor: '#dc3545',
+      confirmButtonText: 'Ok',
+      customClass: { popup: 'swal2-border-radius' }
+    });
+    return;
+  }
 
-    try {
-      const productoData = {
-        ...formData,
-        precio: parseFloat(formData.precio),
-        stock: parseInt(formData.stock),
-      };
+  try {
+    const productoData = {
+      ...formData,
+      precio: parseFloat(formData.precio),
+      stock: parseInt(formData.stock),
+    };
 
-      let response;
-      if (isEditing) {
-        response = await axios.put(`${API_URLS.PRODUCTOS}/${formData.id}`, productoData);
-      } else {
-        response = await axios.post(API_URLS.PRODUCTOS, productoData);
-      }      if (selectedFiles.length > 0) {
-        const imageNames = await uploadImages(response.data.id);
-        response.data.imagenes = imageNames;
-        await axios.put(`${API_URLS.PRODUCTOS}/${response.data.id}`, response.data);
-      }
-
-      setMessage(isEditing ? "Producto actualizado exitosamente" : "Producto creado exitosamente");
-      setFormData({
-        nombre: "",
-        descripcion: "",
-        descripcionDetallada: "",
-        precio: "",
-        stock: "",
-        categoria: "",
-        imagenes: []
-      });
-      
-      // Limpiar las URLs de previsualización
-      previewUrls.forEach(url => URL.revokeObjectURL(url));
-      setPreviewUrls([]);
-      setSelectedFiles([]);
-      setIsEditing(false);
-      
-      // Recargar productos
-      const res = await axios.get(API_URLS.PRODUCTOS);
-      const productosActualizados = res.data.filter(
-        prod => prod.usuario && prod.usuario.id === user.id
-      );
-      setProductos(productosActualizados);
-    } catch (err) {
-      console.error('Error:', err);
-      setError(err.response?.data?.error || 'Error al procesar la operación');
+    let response;
+    if (isEditing) {
+      response = await axios.put(`${API_URLS.PRODUCTOS}/${formData.id}`, productoData);
+    } else {
+      response = await axios.post(API_URLS.PRODUCTOS, productoData);
     }
-  };
+    if (selectedFiles.length > 0) {
+      const imageNames = await uploadImages(response.data.id);
+      response.data.imagenes = imageNames;
+      await axios.put(`${API_URLS.PRODUCTOS}/${response.data.id}`, response.data);
+    }
+
+    await MySwal.fire({
+      icon: 'success',
+      title: isEditing ? 'Producto actualizado' : 'Producto creado',
+      text: isEditing ? 'El producto fue actualizado correctamente.' : 'El producto fue creado exitosamente.',
+      confirmButtonColor: '#28a745',
+      confirmButtonText: 'Ok',
+      customClass: { popup: 'swal2-border-radius' }
+    });
+
+    setFormData({
+      nombre: "",
+      descripcion: "",
+      descripcionDetallada: "",
+      precio: "",
+      stock: "",
+      categoria: "",
+      imagenes: []
+    });
+
+    previewUrls.forEach(url => URL.revokeObjectURL(url));
+    setPreviewUrls([]);
+    setSelectedFiles([]);
+    setIsEditing(false);
+
+    // Recargar productos
+    const res = await axios.get(API_URLS.PRODUCTOS);
+    const productosActualizados = res.data.filter(
+      prod => prod.usuario && prod.usuario.id === user.id
+    );
+    setProductos(productosActualizados);
+    setMessage("");
+    setError("");
+  } catch (err) {
+    console.error('Error:', err);
+    await MySwal.fire({
+      icon: 'error',
+      title: 'Error al guardar',
+      text: err.response?.data?.error || 'Error al procesar la operación',
+      confirmButtonColor: '#dc3545',
+      confirmButtonText: 'Ok',
+      customClass: { popup: 'swal2-border-radius' }
+    });
+    setError(err.response?.data?.error || 'Error al procesar la operación');
+  }
+};
 
   const handleDelete = async (id) => {
     if (!window.confirm("¿Estás seguro de que quieres eliminar este producto?")) {
@@ -250,8 +359,6 @@ export default function GestionProductos() {
           }}>
             {isEditing ? "Editar Producto" : "Crear Nuevo Producto"}
           </h2>
-          {message && <div className="success-message">{message}</div>}
-          {error && <div className="error-message">{error}</div>}
     <div className="form-group">
       <input
         type="text"
