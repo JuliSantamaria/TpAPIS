@@ -3,6 +3,7 @@ FROM node:20 AS build
 WORKDIR /app
 COPY package*.json ./
 COPY vite.config.js ./
+COPY .env.docker .env
 COPY . .
 RUN npm install
 RUN npm run build
