@@ -51,7 +51,7 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <span>Hola, {user.nombre}</span>
+            <span>Hola, {user.username}</span>
             <Link to="/profile">Mi cuenta</Link>
             <Link to="/gestion-productos">Gestion de productos</Link>
             <button  onClick={handleLogout}>Cerrar sesion

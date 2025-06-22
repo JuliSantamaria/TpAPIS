@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
 export const API_URLS = {
     // Productos
@@ -13,7 +13,7 @@ export const API_URLS = {
     USUARIOS: `${API_BASE_URL}/usuarios`,
     USUARIO_BY_ID: (id) => `${API_BASE_URL}/usuarios/${id}`,
     USUARIO_BY_USERNAME: (username) => `${API_BASE_URL}/usuarios/username/${username}`,
-    REGISTER: 'http://localhost:8080/auth/register',
+    REGISTER: `${API_BASE_URL.replace('/api','')}/auth/register`,
     UPDATE_PASSWORD: (id) => `${API_BASE_URL}/usuarios/${id}/password`,
 };
 
