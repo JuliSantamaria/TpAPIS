@@ -7,7 +7,7 @@ import "../../../assets/ProductCard.css";
 
 export default function ProductCard({ product }) {
   const { nombre, descripcion, precio, stock, imagenes, usuario } = product;
-  const { addToCart } = useCart();
+  const { addToCart, openCart } = useCart();
   const { user } = useAuth();
   const [vendedor, setVendedor] = useState(null);
   const [error, setError] = useState("");
@@ -79,7 +79,10 @@ export default function ProductCard({ product }) {
           stock > 0 && (
             <button
               className="add-to-cart-button"
-              onClick={() => addToCart(product)}
+              onClick={() => {
+                addToCart(product);
+                openCart();
+              }}
             >
               Agregar al carrito
             </button>
