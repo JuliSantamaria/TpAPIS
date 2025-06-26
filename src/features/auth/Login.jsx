@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAuth } from "./context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -28,7 +27,8 @@ export default function Login() {
       const token = res.data.token;
       localStorage.setItem("token", token);
 
-      login({ username }); 
+      // Llama al nuevo login asíncrono para guardar el usuario completo
+      await login({ username }, token);
 
       await MySwal.fire({
         icon: 'success',

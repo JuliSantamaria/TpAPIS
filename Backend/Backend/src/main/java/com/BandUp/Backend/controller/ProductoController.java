@@ -41,6 +41,7 @@ public class ProductoController {
     @GetMapping("/{id}")
     public ResponseEntity<Producto> getProductoById(@PathVariable Long id) {
         Producto producto = productoService.getProductoById(id);
+        setFullImageUrls(producto);
         return ResponseEntity.ok(producto);
     }
 
