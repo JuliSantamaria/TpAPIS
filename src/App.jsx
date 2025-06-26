@@ -3,6 +3,7 @@ import { AuthProvider } from './features/auth/context/AuthContext';
 import { CartProvider, useCart } from './features/cart/context/CartContext';
 import Navbar from './shared/components/Navbar';
 import CartSidebar from './features/cart/components/CartSidebar';
+import { useAxiosAuthInterceptor } from './features/auth/useAxiosAuthInterceptor';
 
 import Home from './pages/Home';
 import Login from './features/auth/Login';
@@ -15,6 +16,7 @@ import './App.css';
 
 function AppContent() {
   const { isCartOpen, closeCart } = useCart();
+  useAxiosAuthInterceptor(); // <-- Agrega el interceptor que ejecuta logout
 
   return (
     <>
@@ -25,7 +27,6 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/product/:id" element={<ProductDetail />} />
-
         <Route path="/gestion-productos" element={<GestionProductos />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/categoria/:nombre" element={<CategoryPage />} />

@@ -1,28 +1,20 @@
 package com.BandUp.Backend.controller;
 
+
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import com.BandUp.Backend.exception.PrecioNegativoException;
-import com.BandUp.Backend.exception.ProductoNotFoundException;
 import com.BandUp.Backend.model.Producto;
 import com.BandUp.Backend.service.ProductoService;
 import com.BandUp.Backend.service.FileStorageService;
-import com.BandUp.Backend.exception.ResourceNotFoundException;
 
 
 
@@ -54,7 +46,9 @@ public class ProductoController {
 
     @GetMapping("/categoria/{categoria}")
     public ResponseEntity<List<Producto>> getProductosByCategoria(@PathVariable String categoria) {
-        return ResponseEntity.ok(productoService.getProductosByCategoria(categoria));
+        List<Producto> productos = productoService.getProductosByCategoria(categoria);
+        productos.forEach(this::setFullImageUrls);
+        return ResponseEntity.ok(productos);
     }
 
     @GetMapping("/search")
@@ -62,12 +56,16 @@ public class ProductoController {
             @RequestParam(required = false) String nombre,
             @RequestParam(required = false) Double minPrecio,
             @RequestParam(required = false) Double maxPrecio) {
+        List<Producto> productos;
         if (nombre != null && !nombre.trim().isEmpty()) {
-            return ResponseEntity.ok(productoService.searchProductosByNombre(nombre));
+            productos = productoService.searchProductosByNombre(nombre);
         } else if (minPrecio != null && maxPrecio != null) {
-            return ResponseEntity.ok(productoService.getProductosByPriceRange(minPrecio, maxPrecio));
+            productos = productoService.getProductosByPriceRange(minPrecio, maxPrecio);
+        } else {
+            productos = productoService.getAllProductos();
         }
-        return ResponseEntity.ok(productoService.getAllProductos());
+        productos.forEach(this::setFullImageUrls);
+        return ResponseEntity.ok(productos);
     }
 
     @PostMapping
@@ -82,6 +80,10 @@ public class ProductoController {
     @PutMapping("/{id}")
     public ResponseEntity<Producto> updateProducto(@PathVariable Long id, @RequestBody Producto producto) {
         Producto updatedProducto = productoService.updateProducto(id, producto);
+        // Forzar carga del usuario para que no venga null en la respuesta
+        if (updatedProducto.getUsuario() != null) {
+            updatedProducto.getUsuario().getId();
+        }
         return ResponseEntity.ok(updatedProducto);
     }
 
@@ -129,6 +131,7 @@ public ResponseEntity<Map<String, String>> uploadImage(
     @GetMapping("/mis-productos")
     public ResponseEntity<List<Producto>> getMisProductos(Principal principal) {
         List<Producto> productos = productoService.getProductosByUsuario(principal.getName());
+        productos.forEach(this::setFullImageUrls);
         return ResponseEntity.ok(productos);
     }
 

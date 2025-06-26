@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "./components/ProductCard";
+import "../../assets/home.css";
+import { API_URLS, handleApiError } from "../../config/api";
 
 export default function CategoryPage() {
   const { nombre } = useParams();
@@ -11,19 +13,16 @@ export default function CategoryPage() {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:8080/api/productos/categoria/${nombre}`
-        );
-        setProductos(res.data);
+        const res = await axios.get(API_URLS.PRODUCTOS_BY_CATEGORIA(nombre));
+        // Ordenar igual que en Home
+        const ordenados = res.data.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        setProductos(ordenados);
+        setError("");
       } catch (err) {
         console.error("Error al cargar productos:", err);
-        setError(
-          "Error al cargar productos: " +
-            (err.response?.data?.error || err.message)
-        );
+        setError(handleApiError(err));
       }
     };
-
     fetchProductos();
   }, [nombre]);
 
@@ -40,7 +39,7 @@ export default function CategoryPage() {
       {productos.length === 0 ? (
         <p className="text-center">No hay productos en esta categoría.</p>
       ) : (
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="products-grid">
           {productos.map((producto) => (
             <ProductCard key={producto.id} product={producto} />
           ))}
