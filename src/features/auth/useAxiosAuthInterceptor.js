@@ -1,4 +1,5 @@
 import { useAuth } from "./context/AuthContext";
+import { useEffect } from "react";
 import axiosInstance from "./axiosInstance";
 
 // Hook para inicializar el interceptor con logout del contexto
