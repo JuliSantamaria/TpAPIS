@@ -289,20 +289,48 @@ export default function GestionProductos() {
   }
 };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("¿Estás seguro de que quieres eliminar este producto?")) {
-      return;
-    }
+const handleDelete = async (id) => {
+  const result = await MySwal.fire({
+    title: '¿Estás seguro de que quieres eliminar este producto?',
+    text: "Esta acción no se puede deshacer.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#dc3545',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    customClass: { popup: 'swal2-border-radius' }
+  });
 
-    try {
-      await axios.delete(`http://localhost:8080/api/productos/${id}`);
-      setProductos(productos.filter((prod) => prod.id !== id));
-      setMessage("Producto eliminado exitosamente");
-    } catch (err) {
-      console.error("Error al eliminar:", err);
-      setError(err.response?.data?.error || "Error al eliminar el producto");
-    }
-  };
+  if (!result.isConfirmed) {
+    return;
+  }
+
+  try {
+    await axios.delete(`http://localhost:8080/api/productos/${id}`);
+    setProductos(productos.filter((prod) => prod.id !== id));
+    setMessage("Producto eliminado exitosamente");
+    await MySwal.fire({
+      icon: 'success',
+      title: 'Producto eliminado',
+      text: 'El producto fue eliminado correctamente.',
+      confirmButtonColor: '#28a745',
+      confirmButtonText: 'Ok',
+      customClass: { popup: 'swal2-border-radius' }
+    });
+  } catch (err) {
+    console.error("Error al eliminar:", err);
+    setError(err.response?.data?.error || "Error al eliminar el producto");
+    await MySwal.fire({
+      icon: 'error',
+      title: 'Error al eliminar',
+      text: err.response?.data?.error || 'Por favor, completa todos los campos requeridos antes de eliminar.',
+      confirmButtonColor: '#dc3545',
+      confirmButtonText: 'Ok',
+      customClass: { popup: 'swal2-border-radius' }
+    });
+  }
+};
 
   const handleEdit = (producto) => {
     setFormData({
