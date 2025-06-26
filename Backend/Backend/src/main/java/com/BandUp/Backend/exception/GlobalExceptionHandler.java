@@ -8,25 +8,41 @@ import org.springframework.web.bind.annotation.*;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ProductoNotFoundException.class)
-    public ResponseEntity<String> manejarProductoNoEncontrado(ProductoNotFoundException ex) {
-        System.err.println(">> error: " + ex.getMessage());
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Object> manejarResourceNotFound(ResourceNotFoundException ex) {
+        System.err.println("[404] " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("hola :)");
+    @ExceptionHandler(ProductoNotFoundException.class)
+    public ResponseEntity<Object> manejarProductoNoEncontrado(ProductoNotFoundException ex) {
+        System.err.println("[404] " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(PrecioNegativoException.class)
-    public ResponseEntity<String> manejarPrecioNegativo(PrecioNegativoException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<Object> manejarPrecioNegativo(PrecioNegativoException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> manejarArgumentoInvalido(IllegalArgumentException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<Object> manejarArgumentoInvalido(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> manejarErroresGenerales(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno: " + ex.getMessage());
+    public ResponseEntity<Object> manejarErroresGenerales(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse("Error interno: " + ex.getMessage()));
+    }
+
+    // Clase interna para respuesta de error consistente
+    static class ErrorResponse {
+        public String error;
+        public ErrorResponse(String error) { this.error = error; }
     }
 }
