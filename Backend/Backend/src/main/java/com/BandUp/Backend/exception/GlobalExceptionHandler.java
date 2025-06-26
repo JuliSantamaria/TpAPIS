@@ -1,6 +1,4 @@
 package com.BandUp.Backend.exception;
-import com.BandUp.Backend.exception.PrecioNegativoException;
-import com.BandUp.Backend.exception.ProductoNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
