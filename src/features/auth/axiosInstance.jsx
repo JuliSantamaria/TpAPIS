@@ -7,16 +7,15 @@ const axiosInstance = axios.create({
   }
 });
 
-// Interceptor de request: agregar token si existe y no es una ruta pública
+// Interceptor de request: agregar token si existe y no es login/register
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
-    const isPublic =
+    const isAuthRoute =
       config.url.includes("/auth/login") ||
-      config.url.includes("/auth/register") ||
-      (config.method === "get" && config.url.includes("/api/usuarios/"));
+      config.url.includes("/auth/register");
 
-    if (token && !isPublic) {
+    if (token && !isAuthRoute) {
       config.headers.Authorization = `Bearer ${token}`;
       console.log("✅ Se agregó token al header:", config.headers.Authorization);
     } else {
@@ -35,10 +34,13 @@ axiosInstance.interceptors.response.use(
     if (error.response) {
       switch (error.response.status) {
         case 401:
-          console.warn("Error 401: No autorizado");
-          break;
         case 403:
-          console.warn("Error 403: Acceso prohibido");
+          console.warn(`Error ${error.response.status}: Token expirado o acceso prohibido`);
+          // Limpiar token y redirigir al login
+          localStorage.removeItem("token");
+          if (window.location.pathname !== "/login") {
+            window.location.href = "/login";
+          }
           break;
         case 404:
           console.warn("Error 404: No encontrado");

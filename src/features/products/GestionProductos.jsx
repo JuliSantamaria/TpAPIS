@@ -29,7 +29,6 @@ export default function GestionProductos() {
   useEffect(() => {
     const fetchProductos = async () => {
       if (!user) return;
-
       try {
         const response = await axios.get(API_URLS.MIS_PRODUCTOS);
         setProductos(response.data);
@@ -38,86 +37,10 @@ export default function GestionProductos() {
         setError(err.response?.data?.error || "Error al cargar los productos");
       }
     };
-
-    fetchProductos();const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) {
-    await MySwal.fire({
-      icon: 'error',
-      title: 'Campos obligatorios incompletos',
-      text: error || 'Por favor, completa todos los campos requeridos y sube al menos una imagen.',
-      confirmButtonColor: '#dc3545',
-      confirmButtonText: 'Ok',
-      customClass: { popup: 'swal2-border-radius' }
-    });
-    return;
-  }
-
-  try {
-    const productoData = {
-      ...formData,
-      precio: parseFloat(formData.precio),
-      stock: parseInt(formData.stock),
-    };
-
-    let response;
-    if (isEditing) {
-      response = await axios.put(`${API_URLS.PRODUCTOS}/${formData.id}`, productoData);
-    } else {
-      response = await axios.post(API_URLS.PRODUCTOS, productoData);
-    }
-    if (selectedFiles.length > 0) {
-      const imageNames = await uploadImages(response.data.id);
-      response.data.imagenes = imageNames;
-      await axios.put(`${API_URLS.PRODUCTOS}/${response.data.id}`, response.data);
-    }
-
-    await MySwal.fire({
-      icon: 'success',
-      title: isEditing ? 'Producto actualizado' : 'Producto creado',
-      text: isEditing ? 'El producto fue actualizado correctamente.' : 'El producto fue creado exitosamente.',
-      confirmButtonColor: '#28a745',
-      confirmButtonText: 'Ok',
-      customClass: { popup: 'swal2-border-radius' }
-    });
-
-    setFormData({
-      nombre: "",
-      descripcion: "",
-      descripcionDetallada: "",
-      precio: "",
-      stock: "",
-      categoria: "",
-      imagenes: []
-    });
-
-    previewUrls.forEach(url => URL.revokeObjectURL(url));
-    setPreviewUrls([]);
-    setSelectedFiles([]);
-    setIsEditing(false);
-
-    // Recargar productos
-    const res = await axios.get(API_URLS.PRODUCTOS);
-    const productosActualizados = res.data.filter(
-      prod => prod.usuario && prod.usuario.id === user.id
-    );
-    setProductos(productosActualizados);
-    setMessage("");
-    setError("");
-  } catch (err) {
-    console.error('Error:', err);
-    await MySwal.fire({
-      icon: 'error',
-      title: 'Error al guardar',
-      text: err.response?.data?.error || 'Error al procesar la operación',
-      confirmButtonColor: '#dc3545',
-      confirmButtonText: 'Ok',
-      customClass: { popup: 'swal2-border-radius' }
-    });
-    setError(err.response?.data?.error || 'Error al procesar la operación');
-  }
-};
+    fetchProductos();
   }, [user]);
+
+  // ...existing code...
 
   const handleFileSelect = (event) => {
     const files = [...event.target.files];
@@ -233,7 +156,9 @@ export default function GestionProductos() {
 
     let response;
     if (isEditing) {
-      response = await axios.put(`${API_URLS.PRODUCTOS}/${formData.id}`, productoData);
+      const productoDataSinUsuario = { ...productoData };
+      delete productoDataSinUsuario.usuario;
+      response = await axios.put(`${API_URLS.PRODUCTOS}/${formData.id}`, productoDataSinUsuario);
     } else {
       response = await axios.post(API_URLS.PRODUCTOS, productoData);
     }
@@ -267,12 +192,23 @@ export default function GestionProductos() {
     setSelectedFiles([]);
     setIsEditing(false);
 
-    // Recargar productos
-    const res = await axios.get(API_URLS.PRODUCTOS);
-    const productosActualizados = res.data.filter(
-      prod => prod.usuario && prod.usuario.id === user.id
-    );
-    setProductos(productosActualizados);
+    if (isEditing) {
+      // Actualizar solo el producto editado en el estado, manteniendo el usuario original si el backend no lo devuelve
+      setProductos(prev =>
+        prev.map(p =>
+          p.id === response.data.id
+            ? { ...response.data, usuario: p.usuario }
+            : p
+        )
+      );
+    } else {
+      // Si es creación, recargar todos los productos
+      const res = await axios.get(API_URLS.PRODUCTOS);
+      const productosActualizados = res.data.filter(
+        prod => prod.usuario && prod.usuario.id === user.id
+      );
+      setProductos(productosActualizados);
+    }
     setMessage("");
     setError("");
   } catch (err) {
@@ -307,7 +243,7 @@ const handleDelete = async (id) => {
   }
 
   try {
-    await axios.delete(`http://localhost:8080/api/productos/${id}`);
+    await axios.delete(`${API_URLS.PRODUCTOS}/${id}`);
     setProductos(productos.filter((prod) => prod.id !== id));
     setMessage("Producto eliminado exitosamente");
     await MySwal.fire({
@@ -344,6 +280,18 @@ const handleDelete = async (id) => {
       imagenes: producto.imagenes || [],
     });
     setIsEditing(true);
+    // Scroll al formulario de edición (ajustado: scroll justo arriba del formulario)
+    setTimeout(() => {
+      const formElement = document.querySelector('.formulario');
+      if (formElement) {
+        const offset = 60; // Espacio desde el top (ajusta según tu header)
+        const top = formElement.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({
+          top: top > 0 ? top : 0,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
   };
 
   const handleRemoveImage = async (productoId, fileName) => {

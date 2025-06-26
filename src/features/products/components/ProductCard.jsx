@@ -41,15 +41,21 @@ export default function ProductCard({ product }) {
         </div>
       )}
         <img
-        src={imagenes && imagenes.length > 0 ? imagenes[0] : '/img/placeholder-image.png'}
-        alt={nombre}
-        className="product-image"
-        onError={(e) => {
-          console.error('Error loading image:', imagenes?.[0]);
-          e.target.onerror = null;
-          e.target.src = '/img/placeholder-image.png';
-        }}
-      />
+          src={
+            imagenes && imagenes.length > 0
+              ? imagenes[0].startsWith('http')
+                ? imagenes[0]
+                : `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'}/uploads/${imagenes[0]}`
+              : '/img/placeholder-image.png'
+          }
+          alt={nombre}
+          className="product-image"
+          onError={(e) => {
+            if (e.target.src.endsWith('/img/placeholder-image.png')) return;
+            e.target.onerror = null;
+            e.target.src = '/img/placeholder-image.png';
+          }}
+        />
       <h3>{nombre}</h3>
       <p className="product-description">{descripcion}</p>
       {vendedor && (

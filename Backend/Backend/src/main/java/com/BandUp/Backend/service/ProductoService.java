@@ -80,7 +80,14 @@ public class ProductoService {
         .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
     producto.setUsuario(usuario);
-    return productoRepository.save(producto);
+    productoRepository.save(producto);
+    // Recargar el producto para forzar la carga del usuario
+    Producto productoGuardado = productoRepository.findById(producto.getId())
+        .orElseThrow(() -> new IllegalStateException("Error al guardar el producto"));
+    if (productoGuardado.getUsuario() != null) {
+        productoGuardado.getUsuario().getId();
+    }
+    return productoGuardado;
 }
 
     public Producto updateProducto(Long id, Producto productoDetails) {
@@ -100,7 +107,7 @@ public class ProductoService {
         producto.setPrecio(productoDetails.getPrecio());
         producto.setStock(productoDetails.getStock());
         producto.setImagenes(productoDetails.getImagenes());
-        producto.setUsuario(productoDetails.getUsuario());
+        // NO modificar el usuario, así nunca queda null
 
         return productoRepository.save(producto);
     }
