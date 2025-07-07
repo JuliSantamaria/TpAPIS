@@ -14,13 +14,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Buscar usuario y lanzar excepción inmediatamente si no existe
         Usuario usuario = usuarioRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+            .orElseThrow(() -> new UsernameNotFoundException("Usuario o contraseña incorrectos"));
 
+        // Devolver UserDetails sin roles
         return User.builder()
                 .username(usuario.getUsername())
                 .password(usuario.getPassword())
-                .roles() // Sin roles, pero igual lo dejamos así
+                .roles() // Sin roles
                 .build();
     }
 }
