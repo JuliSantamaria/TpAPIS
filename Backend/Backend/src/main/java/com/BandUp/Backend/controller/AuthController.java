@@ -44,18 +44,30 @@ public class AuthController {
         } catch (BadCredentialsException e) {
             System.out.println("❌ Credenciales inválidas");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Credenciales inválidas"));
+                    .body(Map.of("error", "Usuario o contraseña incorrectos"));
         } catch (Exception e) {
             System.out.println("❗ Error inesperado en login: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Ocurrió un error en el login"));
+                    .body(Map.of("error", "Error al iniciar sesión, por favor intente nuevamente"));
         }
     }
 
 
     @PostMapping("/register")
-        public ResponseEntity<Usuario> register(@RequestBody Usuario usuario) {
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-        return ResponseEntity.ok(usuarioRepository.save(usuario));
+    public ResponseEntity<?> register(@RequestBody Usuario usuario) {
+        try {
+            // Validar existencia de username o email
+            if (usuarioRepository.existsByUsername(usuario.getUsername()) || usuarioRepository.existsByEmail(usuario.getEmail())) {
+                // Mensaje genérico para no delatar info
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "No se pudo registrar el usuario. Verifique los datos ingresados."));
+            }
+            usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+            Usuario nuevoUsuario = usuarioRepository.save(usuario);
+            return ResponseEntity.ok(nuevoUsuario);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "No se pudo registrar el usuario. Intente nuevamente."));
+        }
     }
 }

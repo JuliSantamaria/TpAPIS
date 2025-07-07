@@ -23,34 +23,35 @@ export default function Register() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    await axios.post('http://localhost:8080/auth/register', user);
-    await MySwal.fire({
-      icon: 'success',
-      title: '¡Registro exitoso!',
-      text: 'Tu cuenta ha sido creada correctamente.',
-      confirmButtonColor: '#6c63ff',
-      confirmButtonText: 'Ir a iniciar sesión',
-      footer: '<b>¡Bienvenido a la plataforma!</b>',
-      customClass: {
-        popup: 'swal2-border-radius'
-      }
-    });
-    navigate('/login');
-  } catch (error) {
-    let errorMsg = error.response?.data?.error || "Error al registrar usuario";
-    await MySwal.fire({
-      icon: 'error',
-      title: 'No se pudo registrar',
-      text: errorMsg,
-      confirmButtonColor: '#dc3545',
-      confirmButtonText: 'Intentar de nuevo',
-      footer: errorMsg.includes('correo') ? '<b>¿Ya tienes una cuenta?</b>' : ''
-    });
-    setError(errorMsg);
-  }
-};
+    e.preventDefault();
+    try {
+      await axios.post('http://localhost:8080/auth/register', user);
+      await MySwal.fire({
+        icon: 'success',
+        title: '¡Registro exitoso!',
+        text: 'Tu cuenta ha sido creada correctamente.',
+        confirmButtonColor: '#6c63ff',
+        confirmButtonText: 'Ir a iniciar sesión',
+        footer: '<b>¡Bienvenido a la plataforma!</b>',
+        customClass: {
+          popup: 'swal2-border-radius'
+        }
+      });
+      navigate('/login');
+    } catch (error) {
+      // Mensaje genérico para no delatar si el usuario o email ya existen
+      let errorMsg = error.response?.data?.error || "No se pudo registrar el usuario. Verifique los datos ingresados.";
+      await MySwal.fire({
+        icon: 'error',
+        title: 'No se pudo registrar',
+        text: errorMsg,
+        confirmButtonColor: '#dc3545',
+        confirmButtonText: 'Intentar de nuevo',
+        footer: ''
+      });
+      setError(errorMsg);
+    }
+  };
 
   return (
     <div className="register-container">

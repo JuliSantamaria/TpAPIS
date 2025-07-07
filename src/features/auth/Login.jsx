@@ -42,14 +42,23 @@ export default function Login() {
       navigate("/");
     } catch (err) {
       console.error("🔥 Error al intentar loguear:", err);
-      setError("Error al iniciar sesión: " + (err.response?.data?.error || err.message));
+      // Mostrar el error inmediatamente sin esperar al modal
+      setError(err.response?.data?.error || "Error al iniciar sesión");
+      
+      // Mostrar el modal con un mensaje más amigable
+      const errorMessage = err.response?.status === 401 
+        ? "Usuario o contraseña incorrectos"
+        : "Error al iniciar sesión, por favor intente nuevamente";
+      
       await MySwal.fire({
         icon: 'error',
-        title: 'Error al iniciar sesión',
-        text: err.response?.data?.error || err.message,
+        title: 'Error de acceso',
+        text: errorMessage,
         confirmButtonColor: '#dc3545',
         confirmButtonText: 'Intentar de nuevo',
-        customClass: { popup: 'swal2-border-radius' }
+        customClass: { popup: 'swal2-border-radius' },
+        timer: 3000, // El modal se cerrará automáticamente después de 3 segundos
+        timerProgressBar: true
       });
     }
   };
