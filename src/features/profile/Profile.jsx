@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../auth/context/AuthContext.jsx';
-import axios from 'axios';
+import axiosInstance from '../auth/axiosInstance';
+import { API_URLS } from '../../config/api';
 import '../../assets/perfil.css';
 
 export default function Profile() {
@@ -13,18 +14,14 @@ export default function Profile() {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/productos');
-        const data = res.data;
-        const productosDelUsuario = data.filter(
-          producto => producto.usuario && producto.usuario.id === user?.id
-        );
-        setProductos(productosDelUsuario);
+        // Traer solo los productos del usuario autenticado, con imágenes completas
+        const res = await axiosInstance.get(API_URLS.MIS_PRODUCTOS);
+        setProductos(res.data);
       } catch (error) {
         console.error("Error al obtener productos:", error);
         setError("Error al cargar los productos: " + (error.response?.data?.error || error.message));
       }
     };
-
     if (user) {
       fetchProductos();
     }
@@ -37,14 +34,22 @@ export default function Profile() {
         <>
           <table>
             <tbody>
-              {Object.keys(user)
-                .filter(key => !claveExcluida.includes(key))
-                .map(key => (
-                  <tr key={key}>
-                    <th>{key.toUpperCase()}</th>
-                    <td>{user[key]}</td>
-                  </tr>
-                ))}
+              <tr>
+                <th>NOMBRE</th>
+                <td>{user.nombre}</td>
+              </tr>
+              <tr>
+                <th>APELLIDO</th>
+                <td>{user.apellido}</td>
+              </tr>
+              <tr>
+                <th>EMAIL</th>
+                <td>{user.email}</td>
+              </tr>
+              <tr>
+                <th>USERNAME</th>
+                <td>{user.username}</td>
+              </tr>
             </tbody>
           </table>
 
@@ -59,11 +64,22 @@ export default function Profile() {
             {mostrarProductos && (
               <div className="productos-lista">
                 {productos.length > 0 ? (
-                  <ul>
+                  <ul className="productos-lista-grid">
                     {productos.map(prod => (
                       <li key={prod.id} className="producto-item">
-                        <strong>{prod.nombre}</strong> - ${prod.precio}
-                        <p>{prod.descripcion}</p>
+                        <div className="producto-imagen">
+                          <img
+                            src={prod.imagenes && prod.imagenes.length > 0 ? prod.imagenes[0] : '/img/placeholder-image.png'}
+                            alt={prod.nombre}
+                            style={{ width: '80px', height: 'auto', borderRadius: '8px' }}
+                            onError={e => { e.target.onerror = null; e.target.src = '/img/placeholder-image.png'; }}
+                          />
+                        </div>
+                        <div className="producto-info">
+                          <strong>{prod.nombre}</strong> - ${prod.precio}
+                          <p>{prod.descripcion}</p>
+                          <span className="producto-categoria">{prod.categoria}</span>
+                        </div>
                       </li>
                     ))}
                   </ul>

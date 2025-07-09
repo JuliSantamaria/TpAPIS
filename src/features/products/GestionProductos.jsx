@@ -118,6 +118,9 @@ export default function GestionProductos() {
     }
     if (isNaN(formData.precio) || parseFloat(formData.precio) <= 0) {
       setError("El precio debe ser un número válido mayor que 0");
+      if (parseFloat(formData.precio) < 0) {
+        console.log('[400] Precio negativo ingresado:', formData.precio);
+      }
       return false;
     }
     if (isNaN(formData.stock) || parseInt(formData.stock) < 0) {
@@ -138,8 +141,8 @@ export default function GestionProductos() {
   if (!validateForm()) {
     await MySwal.fire({
       icon: 'error',
-      title: 'Campos obligatorios incompletos',
-      text: error || 'Por favor, completa todos los campos requeridos y sube al menos una imagen.',
+      title: error || 'Error en el formulario',
+      text: error || 'Por favor, revisa los campos e intenta nuevamente.',
       confirmButtonColor: '#dc3545',
       confirmButtonText: 'Ok',
       customClass: { popup: 'swal2-border-radius' }
@@ -448,18 +451,30 @@ const handleDelete = async (id) => {
 
       <div className="productos-list">
         <h3>Mis Productos</h3>
-        {productos.map((producto) => (
-          <div key={producto.id} className="producto-item">
-            <h4>{producto.nombre}</h4>
-            <p>{producto.descripcion}</p>
-            <p>Precio: ${producto.precio}</p>
-            <p>Stock: {producto.stock}</p>
-            <div className="button-group">
-              <button onClick={() => handleEdit(producto)}>Editar</button>
-              <button onClick={() => handleDelete(producto.id)}>Eliminar</button>
+        {productos.map((producto) => {
+          // Mostrar la imagen principal (primera) si existe, usando la URL completa
+          const imagenPrincipal = producto.imagenes && producto.imagenes.length > 0 ? producto.imagenes[0] : null;
+          return (
+            <div key={producto.id} className="producto-item">
+              {imagenPrincipal && (
+                <img
+                  src={imagenPrincipal}
+                  alt={producto.nombre}
+                  className="producto-imagen-lista"
+                  style={{ maxWidth: '120px', maxHeight: '120px', objectFit: 'cover', borderRadius: '8px', marginBottom: '8px' }}
+                />
+              )}
+              <h4>{producto.nombre}</h4>
+              <p>{producto.descripcion}</p>
+              <p>Precio: ${producto.precio}</p>
+              <p>Stock: {producto.stock}</p>
+              <div className="button-group">
+                <button onClick={() => handleEdit(producto)}>Editar</button>
+                <button onClick={() => handleDelete(producto.id)}>Eliminar</button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

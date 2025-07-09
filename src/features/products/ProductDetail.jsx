@@ -133,7 +133,11 @@ export default function ProductDetail() {
           imagenes.map((img, index) => (
             <img
               key={index}
-              src={`http://localhost:8080/uploads/${img}`}
+              src={
+                img.startsWith('http')
+                  ? img
+                  : `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'}/uploads/${img}`
+              }
               alt={`${nombre} - Imagen ${index + 1}`}
               style={{
                 width: "200px",
@@ -143,7 +147,7 @@ export default function ProductDetail() {
                 border: "1px solid #ddd"
               }}
               onError={(e) => {
-                console.error('Error loading image:', img);
+                if (e.target.src.endsWith('/img/placeholder-image.png')) return;
                 e.target.onerror = null;
                 e.target.src = '/img/placeholder-image.png';
               }}
