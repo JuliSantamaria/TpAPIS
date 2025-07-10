@@ -71,23 +71,35 @@ public class ProductoService {
     }
 
     public Producto createProducto(Producto producto, String username) {
-    validarProducto(producto);
-    if (productoRepository.existsByNombre(producto.getNombre())) {
-        throw new IllegalArgumentException("Ya existe un producto con ese nombre");
-    }
+        validarProducto(producto);
+        if (productoRepository.existsByNombre(producto.getNombre())) {
+            throw new IllegalArgumentException("Ya existe un producto con ese nombre");
+        }
 
-    Usuario usuario = usuarioRepository.findByUsername(username)
-        .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+        Usuario usuario = usuarioRepository.findByUsername(username)
+            .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-    producto.setUsuario(usuario);
-    productoRepository.save(producto);
-    // Recargar el producto para forzar la carga del usuario
-    Producto productoGuardado = productoRepository.findById(producto.getId())
-        .orElseThrow(() -> new IllegalStateException("Error al guardar el producto"));
-    if (productoGuardado.getUsuario() != null) {
-        productoGuardado.getUsuario().getId();
-    }
-    return productoGuardado;
+        producto.setUsuario(usuario);
+        // Normalizar imágenes: solo guardar nombres de archivo, nunca URLs completas
+        if (producto.getImagenes() == null) {
+            producto.setImagenes(new java.util.ArrayList<>());
+        } else {
+            java.util.List<String> nombres = producto.getImagenes().stream()
+                .filter(img -> img != null && !img.trim().isEmpty())
+                .map(img -> {
+                    int lastSlash = img.lastIndexOf("/");
+                    return lastSlash >= 0 ? img.substring(lastSlash + 1) : img;
+                })
+                .toList();
+            producto.setImagenes(new java.util.ArrayList<>(nombres));
+        }
+
+        Producto productoGuardado = productoRepository.save(producto);
+        // Forzar carga del usuario para evitar problemas de serialización lazy
+        if (productoGuardado.getUsuario() != null) {
+            productoGuardado.getUsuario().getId();
+        }
+        return productoGuardado;
 }
 
     public Producto updateProducto(Long id, Producto productoDetails) {
@@ -106,7 +118,22 @@ public class ProductoService {
         producto.setCategoria(productoDetails.getCategoria());
         producto.setPrecio(productoDetails.getPrecio());
         producto.setStock(productoDetails.getStock());
-        producto.setImagenes(productoDetails.getImagenes());
+        // Siempre asegurar que la lista de imágenes no sea null
+        if (productoDetails.getImagenes() != null) {
+            // Filtrar imágenes vacías y extraer solo el nombre de archivo
+            java.util.List<String> imagenesFiltradas = productoDetails.getImagenes().stream()
+                .filter(img -> img != null && !img.trim().isEmpty())
+                .map(img -> {
+                    int lastSlash = img.lastIndexOf("/");
+                    return lastSlash >= 0 ? img.substring(lastSlash + 1) : img;
+                })
+                .toList();
+            // Nunca guardar null, siempre lista vacía si no hay imágenes
+            producto.setImagenes(new java.util.ArrayList<>(imagenesFiltradas));
+        } else if (producto.getImagenes() == null) {
+            // Si el producto ya tenía null, poner lista vacía
+            producto.setImagenes(new java.util.ArrayList<>());
+        }
         // NO modificar el usuario, así nunca queda null
 
         return productoRepository.save(producto);
