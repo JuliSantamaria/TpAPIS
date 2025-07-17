@@ -1,0 +1,9 @@
+com/BandUp/Backend/exception/MarcaExceptionHandler$ErrorResponse.class
+com/BandUp/Backend/dto/MarcaRequestDTO.class
+com/BandUp/Backend/model/Marca.class
+com/BandUp/Backend/dto/MarcaResponseDTO.class
+com/BandUp/Backend/exception/MarcaExceptionHandler.class
+com/BandUp/Backend/controller/MarcaController.class
+com/BandUp/Backend/repository/MarcaRepository.class
+com/BandUp/Backend/exception/MarcaNoEncontradaException.class
+com/BandUp/Backend/service/MarcaService.class

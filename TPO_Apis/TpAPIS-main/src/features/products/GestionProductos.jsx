@@ -1,0 +1,518 @@
+import { useState, useEffect } from "react";
+import { useAuth } from "../auth/context/AuthContext";
+import axios from "../auth/axiosInstance";
+import { API_URLS } from "../../config/api";
+import "../../assets/GestionProductos.css";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
+
+export default function GestionProductos() {
+  const [productos, setProductos] = useState([]);
+  const CATEGORIAS = ["Guitarras", "Baterias", "Pianos", "Viento", "Percusion"];
+  const [formData, setFormData] = useState({
+    nombre: "",
+    descripcion: "",
+    descripcionDetallada: "",
+    precio: "",
+    stock: "",
+    categoria: "",
+    imagenes: [],
+  });
+  const [selectedFiles, setSelectedFiles] = useState([]); // Archivos nuevos
+  const [previewUrls, setPreviewUrls] = useState([]); // Previews de archivos nuevos
+  const [virtualImages, setVirtualImages] = useState([]); // Imágenes ya existentes (nombres)
+  const [isEditing, setIsEditing] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const { user } = useAuth();
+  useEffect(() => {
+    const fetchProductos = async () => {
+      if (!user) return;
+      try {
+        const response = await axios.get(API_URLS.MIS_PRODUCTOS);
+        setProductos(response.data);
+      } catch (err) {
+        console.error("Error al cargar productos:", err);
+        setError(err.response?.data?.error || "Error al cargar los productos");
+      }
+    };
+    fetchProductos();
+  }, [user]);
+
+  // ...existing code...
+
+  const handleFileSelect = (event) => {
+    const files = [...event.target.files];
+    setSelectedFiles(prev => [...prev, ...files]);
+    // Crear URLs de previsualización para las nuevas imágenes
+    const newPreviewUrls = files.map(file => URL.createObjectURL(file));
+    setPreviewUrls(prev => [...prev, ...newPreviewUrls]);
+  }
+  // Eliminar imagen virtual (ya existente en el backend)
+  const removeVirtualImage = (index) => {
+    setVirtualImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeSelectedFile = (index) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    
+    // Liberar URL de previsualización
+    URL.revokeObjectURL(previewUrls[index]);
+    setPreviewUrls(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Limpiar URLs de previsualización al desmontar
+  useEffect(() => {
+    return () => {
+      previewUrls.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, []);
+
+  const uploadImages = async (productoId) => {
+    const uploadedImageNames = [];
+    for (const file of selectedFiles) {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await axios.post(
+          `${API_URLS.PRODUCTOS}/${productoId}/imagenes`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        uploadedImageNames.push(response.data.fileName);
+      } catch (error) {
+        console.error("Error al subir imagen:", error);
+        throw error;
+      }
+    }
+    return uploadedImageNames;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "imagenes") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value.split(",").map((img) => img.trim()),
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+  const validateForm = () => {
+    if (
+      !formData.nombre ||
+      !formData.descripcion ||
+      !formData.precio ||
+      !formData.stock ||
+      !formData.categoria
+    ) {
+      setError("Todos los campos son obligatorios");
+      return false;
+    }
+    if (isNaN(formData.precio) || parseFloat(formData.precio) <= 0) {
+      setError("El precio debe ser un número válido mayor que 0");
+      if (parseFloat(formData.precio) < 0) {
+        console.log('[400] Precio negativo ingresado:', formData.precio);
+      }
+      return false;
+    }
+    if (isNaN(formData.stock) || parseInt(formData.stock) < 0) {
+      setError("El stock debe ser un número válido mayor o igual a 0");
+      return false;
+    }
+    // Validar que haya al menos una imagen (nueva o existente)
+    const totalImagenes = virtualImages.length + selectedFiles.length;
+    if (totalImagenes === 0) {
+      setError("Debe haber al menos una imagen para el producto");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      await MySwal.fire({
+        icon: 'error',
+        title: error || 'Error en el formulario',
+        text: error || 'Por favor, revisa los campos e intenta nuevamente.',
+        confirmButtonColor: '#dc3545',
+        confirmButtonText: 'Ok',
+        customClass: { popup: 'swal2-border-radius' }
+      });
+      return;
+    }
+
+    try {
+      const productoData = {
+        ...formData,
+        imagenes: virtualImages, // Solo las imágenes virtuales (existentes)
+        precio: parseFloat(formData.precio),
+        stock: parseInt(formData.stock),
+      };
+
+      let response;
+      if (isEditing) {
+        const productoDataSinUsuario = { ...productoData };
+        delete productoDataSinUsuario.usuario;
+        response = await axios.put(`${API_URLS.PRODUCTOS}/${formData.id}`, productoDataSinUsuario);
+      } else {
+        response = await axios.post(API_URLS.PRODUCTOS, productoData);
+      }
+      if (selectedFiles.length > 0) {
+        const imageNames = await uploadImages(response.data.id);
+        // Unir imágenes virtuales (existentes) y nuevas
+        response.data.imagenes = [...virtualImages, ...imageNames];
+        await axios.put(`${API_URLS.PRODUCTOS}/${response.data.id}`, response.data);
+      }
+
+      await MySwal.fire({
+        icon: 'success',
+        title: isEditing ? 'Producto actualizado' : 'Producto creado',
+        text: isEditing ? 'El producto fue actualizado correctamente.' : 'El producto fue creado exitosamente.',
+        confirmButtonColor: '#28a745',
+        confirmButtonText: 'Ok',
+        customClass: { popup: 'swal2-border-radius' }
+      });
+
+      setFormData({
+        nombre: "",
+        descripcion: "",
+        descripcionDetallada: "",
+        precio: "",
+        stock: "",
+        categoria: "",
+        imagenes: []
+      });
+
+      previewUrls.forEach(url => URL.revokeObjectURL(url));
+      setPreviewUrls([]);
+      setSelectedFiles([]);
+      setVirtualImages([]);
+      setIsEditing(false);
+
+      if (isEditing) {
+        setProductos(prev =>
+          prev.map(p =>
+            p.id === response.data.id
+              ? { ...response.data, usuario: p.usuario }
+              : p
+          )
+        );
+      } else {
+        const res = await axios.get(API_URLS.PRODUCTOS);
+        const productosActualizados = res.data.filter(
+          prod => prod.usuario && prod.usuario.id === user.id
+        );
+        setProductos(productosActualizados);
+      }
+      setMessage("");
+      setError("");
+    } catch (err) {
+      console.error('Error:', err);
+      await MySwal.fire({
+        icon: 'error',
+        title: 'Error al guardar',
+        text: err.response?.data?.error || 'Error al procesar la operación',
+        confirmButtonColor: '#dc3545',
+        confirmButtonText: 'Ok',
+        customClass: { popup: 'swal2-border-radius' }
+      });
+      setError(err.response?.data?.error || 'Error al procesar la operación');
+    }
+  };
+
+const handleDelete = async (id) => {
+  const result = await MySwal.fire({
+    title: '¿Estás seguro de que quieres eliminar este producto?',
+    text: "Esta acción no se puede deshacer.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#dc3545',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    customClass: { popup: 'swal2-border-radius' }
+  });
+
+  if (!result.isConfirmed) {
+    return;
+  }
+
+  try {
+    await axios.delete(`${API_URLS.PRODUCTOS}/${id}`);
+    setProductos(productos.filter((prod) => prod.id !== id));
+    setMessage("Producto eliminado exitosamente");
+    await MySwal.fire({
+      icon: 'success',
+      title: 'Producto eliminado',
+      text: 'El producto fue eliminado correctamente.',
+      confirmButtonColor: '#28a745',
+      confirmButtonText: 'Ok',
+      customClass: { popup: 'swal2-border-radius' }
+    });
+  } catch (err) {
+    console.error("Error al eliminar:", err);
+    setError(err.response?.data?.error || "Error al eliminar el producto");
+    await MySwal.fire({
+      icon: 'error',
+      title: 'Error al eliminar',
+      text: err.response?.data?.error || 'Por favor, completa todos los campos requeridos antes de eliminar.',
+      confirmButtonColor: '#dc3545',
+      confirmButtonText: 'Ok',
+      customClass: { popup: 'swal2-border-radius' }
+    });
+  }
+};
+
+  const handleEdit = (producto) => {
+    // Extraer solo el nombre de archivo de cada imagen
+    const imagenesSoloNombre = (producto.imagenes || []).map(img => {
+      if (!img) return "";
+      const lastSlash = img.lastIndexOf("/");
+      return lastSlash >= 0 ? img.substring(lastSlash + 1) : img;
+    });
+    setFormData({
+      id: producto.id,
+      nombre: producto.nombre,
+      descripcion: producto.descripcion,
+      descripcionDetallada: producto.descripcionDetallada || "",
+      precio: producto.precio.toString(),
+      stock: producto.stock.toString(),
+      categoria: producto.categoria,
+      imagenes: imagenesSoloNombre,
+    });
+    setVirtualImages(imagenesSoloNombre);
+    setSelectedFiles([]);
+    setPreviewUrls([]);
+    setIsEditing(true);
+    setTimeout(() => {
+      const formElement = document.querySelector('.formulario');
+      if (formElement) {
+        const offset = 60;
+        const top = formElement.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({
+          top: top > 0 ? top : 0,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+  };
+  // Cancelar edición
+  const handleCancelEdit = () => {
+    setFormData({
+      nombre: "",
+      descripcion: "",
+      descripcionDetallada: "",
+      precio: "",
+      stock: "",
+      categoria: "",
+      imagenes: []
+    });
+    setVirtualImages([]);
+    setSelectedFiles([]);
+    setPreviewUrls([]);
+    setIsEditing(false);
+  };
+
+  const handleRemoveImage = async (productoId, fileName) => {
+    try {
+      await axios.delete(`${API_URLS.PRODUCTOS}/${productoId}/imagenes/${fileName}`);
+      
+      // Actualizar el estado local
+      setFormData(prev => ({
+        ...prev,
+        imagenes: prev.imagenes.filter(img => img !== fileName)
+      }));
+
+      // Actualizar la lista de productos
+      setProductos(prev =>
+        prev.map(p =>
+          p.id === productoId
+            ? { ...p, imagenes: p.imagenes.filter(img => img !== fileName) }
+            : p
+        )
+      );
+
+      setMessage('Imagen eliminada correctamente');
+    } catch (error) {
+      console.error('Error al eliminar la imagen:', error);
+      setError('Error al eliminar la imagen');
+    }
+  };
+
+  if (!user) {
+    return <p>Debe iniciar sesión para gestionar productos</p>;
+  }
+
+  return (
+      <div className="gestion-container">
+        <form onSubmit={handleSubmit} className="formulario">
+          <h2 style={{
+            textAlign: "center",
+            margin: "0 0 18px 0",
+            fontWeight: "bold",
+            fontSize: "2rem"
+          }}>
+            {isEditing ? "Editar Producto" : "Crear Nuevo Producto"}
+          </h2>
+    <div className="form-group">
+      <input
+        type="text"
+        name="nombre"
+        placeholder="Nombre del producto"
+        value={formData.nombre}
+        onChange={handleChange}
+      />
+    </div>
+    <div className="form-group">
+      <textarea
+        name="descripcion"
+        placeholder="Descripción corta"
+        value={formData.descripcion}
+        onChange={handleChange}
+        rows={2}
+      />
+    </div>
+    <div className="form-group">
+      <textarea
+        name="descripcionDetallada"
+        placeholder="Descripción detallada"
+        value={formData.descripcionDetallada}
+        onChange={handleChange}
+        rows={2}
+      />
+    </div>
+    <div className="form-group">
+      <input
+        type="number"
+        name="precio"
+        placeholder="Precio"
+        value={formData.precio}
+        onChange={handleChange}
+      />
+    </div>
+    <div className="form-group">
+      <input
+        type="number"
+        name="stock"
+        placeholder="Stock"
+        value={formData.stock}
+        onChange={handleChange}
+      />
+    </div>
+    <div className="form-group">
+      <select
+        name="categoria"
+        value={formData.categoria}
+        onChange={handleChange}
+      >
+        <option value="">Selecciona una categoría</option>
+        {CATEGORIAS.map((cat) => (
+          <option key={cat} value={cat}>
+            {cat}
+          </option>
+        ))}
+      </select>
+    </div>
+    <div className="form-group file-upload-container">
+      <input
+        type="file"
+        multiple
+        accept="image/*"
+        onChange={handleFileSelect}
+        className="file-input"
+      />
+      <div className="selected-files">
+        {/* Imágenes virtuales (existentes) */}
+        {virtualImages.map((img, index) => (
+          <div key={"virtual-" + index} className="selected-file-preview">
+            <img
+              src={`http://localhost:8080/uploads/${img}`}
+              alt={`Imagen actual ${index + 1}`}
+              className="image-preview"
+            />
+            <button
+              type="button"
+              onClick={() => removeVirtualImage(index)}
+              className="remove-image"
+            >
+              ×
+            </button>
+            <span className="file-name">{img}</span>
+          </div>
+        ))}
+        {/* Imágenes nuevas (previews) */}
+        {previewUrls.map((url, index) => (
+          <div key={"new-" + index} className="selected-file-preview">
+            <img
+              src={url}
+              alt={`Preview ${index + 1}`}
+              className="image-preview"
+            />
+            <button
+              type="button"
+              onClick={() => removeSelectedFile(index)}
+              className="remove-image"
+            >
+              ×
+            </button>
+            <span className="file-name">{selectedFiles[index].name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+    {/* Ya no mostramos current-images, ahora todo está en selected-files */}
+    <div style={{ display: 'flex', gap: '10px' }}>
+      <button type="submit" className="submit-button">
+        {isEditing ? "Actualizar Producto" : "Crear Producto"}
+      </button>
+      {isEditing && (
+        <button type="button" className="submit-button" style={{ background: '#6c757d' }} onClick={handleCancelEdit}>
+          Cancelar edición
+        </button>
+      )}
+    </div>
+  </form>
+
+      <div className="productos-list">
+        <h3>Mis Productos</h3>
+        {productos.map((producto) => {
+          // Mostrar la imagen principal (primera) si existe, usando la URL completa
+          const imagenPrincipal = producto.imagenes && producto.imagenes.length > 0 ? producto.imagenes[0] : null;
+          return (
+            <div key={producto.id} className="producto-item">
+              {imagenPrincipal && (
+                <img
+                  src={imagenPrincipal}
+                  alt={producto.nombre}
+                  className="producto-imagen-lista"
+                  style={{ maxWidth: '120px', maxHeight: '120px', objectFit: 'cover', borderRadius: '8px', marginBottom: '8px' }}
+                />
+              )}
+              <h4>{producto.nombre}</h4>
+              <p>{producto.descripcion}</p>
+              <p>Precio: ${producto.precio}</p>
+              <p>Stock: {producto.stock}</p>
+              <div className="button-group">
+                <button onClick={() => handleEdit(producto)}>Editar</button>
+                <button onClick={() => handleDelete(producto.id)}>Eliminar</button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
